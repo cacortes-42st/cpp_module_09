@@ -6,12 +6,46 @@
 /*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 09:49:55 by cacortes          #+#    #+#             */
-/*   Updated: 2026/09/27 14:05:26 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/09/28 22:32:10 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BitcoinExchange.hpp"
 #include <cctype>
+
+int	check_date(int month, int day)
+{
+	(void)day;
+	if (month % 2 != 0)
+	{
+		std::cout << "Es impar" << std::endl;
+		if (month >= 7)
+		{
+			if (day != 31)
+				return (1);
+		}
+		else
+		{
+			if (day != 30)
+				return (1);
+		}
+	}
+	else
+	{
+		std::cout << "Es par" << std::endl;
+		if (month >= 8)
+		{
+			if (day != 31)
+				return (1);
+		}
+		else
+		{
+			if (day != 30)
+				return (1);
+		}
+	}
+	return (0);
+}
 
 bool	isNumber(std::string str)
 {
@@ -22,6 +56,7 @@ bool	isNumber(std::string str)
 	}
 	return true;
 }
+
 
 int	date_parser(std::string date)
 {
@@ -68,13 +103,100 @@ int	date_parser(std::string date)
 		return(1);
 	else if (Iday <= 0 || Iday > 31)
 		return(1);
-	
+	else
+	{
+		if (Imonth == 02)
+		{
+			if ((Iyear % 4 == 0 && Iyear % 100 != 0) || Iyear % 400 == 0)
+			{
+				if (Iday != 29)
+					return (1);
+			}
+			else
+				if (Iday != 28)
+					return (1);
+		}
+		if (Iday == 31 || Iday == 30)
+		{
+			if (!check_date(Imonth, Iday))
+				return (1);
+		}
+	}
+
+
 	std::cout << year << std::endl;
 	std::cout << month << std::endl;
 	std::cout << day << std::endl;
 
 	return (0);
 }
+
+int	isFloat(std::string lit)
+{
+	size_t i = 0;
+	int	f = 0;
+	int	p = 0;
+
+	if (lit.empty())
+		return (1);
+	if (lit[i] == '+' || lit[i] == '-')
+		i++;
+	if (lit[lit.length() - 1] != 'f')
+		return (1);
+	while (i < lit.length())
+	{
+		if (lit[i] == 'f')
+			f++;
+		if (lit[i] == '.' && lit[i + 1] != '\0')
+		{
+			p++;
+			if (lit[i + 1] == 'f')
+				return (1);
+		}
+		if ((!std::isdigit(lit[i]) && lit[i] != '.' && lit[i] != 'f') || f > 1 || p > 1)
+			return (1);
+		i++;
+	}
+	if (p != 1)
+		return (1);
+
+	return (0);
+}
+
+
+int	isDouble(std::string lit)
+{
+	size_t i = 0;
+	int	p = 0;
+
+	if (lit.empty())
+		return (1);
+	if (lit[i] == '+' || lit[i] == '-')
+		i++;
+	while (i < lit.length())
+	{
+		if (lit[i] == '.' && lit[i + 1] != '\0' && lit[i - 1] != '\0')
+		{
+			p++;
+			if (lit[i + 1] == 'f' || !std::isdigit(lit[i + 1]) || !std::isdigit(lit[i - 1]))
+				return (1);
+		}
+		if ((!std::isdigit(lit[i]) && lit[i] != '.'))
+			return (1);
+
+		i++;
+	}
+	if (p != 1)
+		return (1);
+	return (0);
+}
+
+int	value_parser(std::string value)
+{
+	
+}
+
+
 int	parse_line(std::string date, char separator, std::string value)
 {
 	if (date_parser(date))
@@ -146,3 +268,7 @@ int	main(int argc, char **argv)
 
 	return (0);
 }
+
+
+
+
