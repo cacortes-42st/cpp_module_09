@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BitcoinExchange.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 09:50:18 by cacortes          #+#    #+#             */
-/*   Updated: 2026/09/26 19:11:14 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/09/29 15:35:04 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define BITCOINEXCHANGE_HPP
 
 #include <iostream>
+#include <cstdlib>
 
 /*For read file system*/
 #include <unistd.h>
@@ -21,5 +22,8 @@
 
 /*For istringstream*/
 #include <sstream>
+
+/*For the csv file*/
+#include <fstream>
 
 #endif

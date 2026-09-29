@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 09:49:55 by cacortes          #+#    #+#             */
-/*   Updated: 2026/09/28 22:32:10 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/09/29 16:28:17 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BitcoinExchange.hpp"
 #include <cctype>
+
+/*Check and process input lines*/
 
 int	check_date(int month, int day)
 {
@@ -56,7 +58,6 @@ bool	isNumber(std::string str)
 	}
 	return true;
 }
-
 
 int	date_parser(std::string date)
 {
@@ -160,48 +161,57 @@ int	isFloat(std::string lit)
 	if (p != 1)
 		return (1);
 
+	float result = std::strtof(lit.c_str(), NULL);
+	if (result < 0 || result > 1000)
+		return (1);
+		
 	return (0);
 }
 
-
-int	isDouble(std::string lit)
+int	isInt(std::string lit)
 {
 	size_t i = 0;
-	int	p = 0;
+	int	Ilit;
 
 	if (lit.empty())
 		return (1);
-	if (lit[i] == '+' || lit[i] == '-')
+	if (lit[i] == '+')
 		i++;
-	while (i < lit.length())
+	else if (lit[i] == '-')
+		return (1);
+	if (i == lit.length())
+		return (1);
+	while(i < lit.length())
 	{
-		if (lit[i] == '.' && lit[i + 1] != '\0' && lit[i - 1] != '\0')
-		{
-			p++;
-			if (lit[i + 1] == 'f' || !std::isdigit(lit[i + 1]) || !std::isdigit(lit[i - 1]))
-				return (1);
-		}
-		if ((!std::isdigit(lit[i]) && lit[i] != '.'))
+		if (!std::isdigit(lit[i]))
 			return (1);
-
 		i++;
 	}
-	if (p != 1)
+	std::istringstream(lit) >> Ilit;
+	if (Ilit < 0 || Ilit > 1000)
 		return (1);
+	
 	return (0);
 }
 
 int	value_parser(std::string value)
 {
-	
-}
+	if (!isFloat(value))
+		std::cout << "float" << std::endl;
+	else if (!isInt(value))
+		std::cout << "Int" << std::endl;
+	else
+		return (1);
 
+	return (0);
+}
 
 int	parse_line(std::string date, char separator, std::string value)
 {
 	if (date_parser(date))
 		return (1);
-	(void)value;
+	if (value_parser(value))
+		return (1);
 	if (separator != '|')
 		return (1);
 	return (0);
@@ -246,6 +256,14 @@ int	line_extractor(int fd)
 	return (0);
 }
 
+
+/*Check and process csv lines*/
+
+int	file_extractor(std::ifstream& file)
+{
+	
+}
+
 int	main(int argc, char **argv)
 {
 	if (argc != 2)
@@ -264,11 +282,68 @@ int	main(int argc, char **argv)
 	if (line_extractor(fd))
 		std::cout << "ERROR" << std::endl;
 
+
+	std::ifstream file("data.csv");
+	
+	if (!file.is_open())
+	{
+		std::cout << "Error opening the file" << std::endl;
+		return (1);
+	}
+	else
+		file_extractor(file);
+		
 	close(fd);
 
 	return (0);
 }
 
+/*
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <map>
+#include <cstdlib>
+
+int main()
+{
+    std::map<std::string, float> database;
+
+    std::ifstream file("data.csv");
+
+    if (!file.is_open())
+    {
+        std::cerr << "Error: no se pudo abrir data.csv" << std::endl;
+        return 1;
+    }
+
+    // Saltamos la cabecera
+    std::string line;
+    std::getline(file, line);
+
+    // Leemos el resto
+    while (std::getline(file, line))
+    {
+        std::string date;
+        std::string price;
+
+        std::getline(file, date, ',');
+        std::getline(file, price);
+
+        database[date] = std::atof(price.c_str());
+    }
+
+    // Comprobamos qué hemos guardado
+    std::map<std::string, float>::iterator it;
+
+    for (it = database.begin(); it != database.end(); ++it)
+    {
+        std::cout << it->first << " => "
+                  << it->second << std::endl;
+    }
+
+    return 0;
+}
 
 
-
+*/
