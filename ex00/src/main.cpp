@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 09:49:55 by cacortes          #+#    #+#             */
-/*   Updated: 2026/09/29 16:28:17 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/09/30 21:20:01 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,7 +217,7 @@ int	parse_line(std::string date, char separator, std::string value)
 	return (0);
 }
 
-int	line_extractor(int fd)
+std::map<std::string, float>	line_extractor(int fd, std::map<std::string, float> databaseI)
 {
 	char buffer[1024];
 	size_t n;
@@ -231,7 +231,7 @@ int	line_extractor(int fd)
 	{
 		for (size_t i = 0; i < n; i++)
 		{
-			if (buffer[i] == '\n')
+			if (buffer[i] == '\n'/* || !line.empty()*/)
 			{
 				//std::cout << "LINEA: " << line << std::endl;
 				std::istringstream iss(line);
@@ -242,26 +242,84 @@ int	line_extractor(int fd)
 				std::cout << value << std::endl;
 				std::cout << "\n" << std::endl;
 				if (parse_line(date, separator, value))
-					return (1);		
+					throw std::runtime_error("Error: invalid line");
+				/*Al poner fuera que se capture el error se añade el return, en el lado del catch*/
+				databaseI[date] = std::strtof(value.c_str(), NULL);
 				line.clear();
 			}
 			else
 				line += buffer[i];
 		}
 	}
+	
+	// std::map<std::string, float>::iterator it;
 
+	// for (it = databaseI.begin(); it != databaseI.end(); it++)
+	// {
+	// 	std::cout << "Date: " << it->first << std::endl;
+	// 	std::cout << "Value: " << it->second << std::endl;
+	// }
+
+	
 	/*if (!line.empty())
 		std::cout << "LINEA: " << line << std::endl;*/
 
-	return (0);
+	return (databaseI);
 }
 
 
 /*Check and process csv lines*/
 
-int	file_extractor(std::ifstream& file)
+std::map<std::string, float> file_extractor(std::ifstream& file)
 {
+	std::map<std::string, float> database;
 	
+	std::string	line;
+	std::getline(file, line);
+
+	while (getline(file, line))
+	{
+		std::string date;
+		std::string value;
+
+		std::istringstream seg(line);
+
+		std::getline(seg, date, ',');
+		std::getline(seg, value);
+
+		database[date] = std::strtof(value.c_str(), NULL);
+	}
+	/*
+	std::map<std::string, float>::iterator it;
+
+	for (it = database.begin(); it != database.end(); it++)
+	{
+		std::cout << "Date: " << it->first << std::endl;
+		std::cout << "Value: " << it->second << std::endl;
+	}
+	*/
+	return (database);
+}
+
+void	solution_printer(std::map<std::string, float> databaseI, std::map<std::string, float> databaseS)
+{
+	std::map<std::string, float>::iterator itI;
+
+	for (itI = databaseI.begin(); itI != databaseI.end(); itI++)
+	{
+		std::map<std::string, float>::iterator itS;
+
+		itS = databaseS.find(itI->first);
+
+		if (itS != databaseS.end())
+		{
+			float result = itI->second * itS->second;
+			if ()
+			std::cout << itI->first << " => " << itI->second << " = " << result << std::endl;
+		}
+		else
+			std::cout << "No encontrado" << std::endl;
+	}
 }
 
 int	main(int argc, char **argv)
@@ -279,71 +337,47 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 
-	if (line_extractor(fd))
-		std::cout << "ERROR" << std::endl;
+	std::map<std::string, float> databaseI;
+
+	databaseI = line_extractor(fd, databaseI);
 
 
 	std::ifstream file("data.csv");
-	
+	std::map<std::string, float> databaseS;
+		
 	if (!file.is_open())
 	{
 		std::cout << "Error opening the file" << std::endl;
 		return (1);
 	}
 	else
-		file_extractor(file);
+		databaseS = file_extractor(file);
 		
+	solution_printer(databaseI, databaseS);
+	
 	close(fd);
 
 	return (0);
 }
 
+
 /*
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <map>
-#include <cstdlib>
 
-int main()
+itS = databaseS.lower_bound(itI->first);
+
+if (itS == databaseS.end())
 {
-    std::map<std::string, float> database;
-
-    std::ifstream file("data.csv");
-
-    if (!file.is_open())
-    {
-        std::cerr << "Error: no se pudo abrir data.csv" << std::endl;
-        return 1;
-    }
-
-    // Saltamos la cabecera
-    std::string line;
-    std::getline(file, line);
-
-    // Leemos el resto
-    while (std::getline(file, line))
-    {
-        std::string date;
-        std::string price;
-
-        std::getline(file, date, ',');
-        std::getline(file, price);
-
-        database[date] = std::atof(price.c_str());
-    }
-
-    // Comprobamos qué hemos guardado
-    std::map<std::string, float>::iterator it;
-
-    for (it = database.begin(); it != database.end(); ++it)
-    {
-        std::cout << it->first << " => "
-                  << it->second << std::endl;
-    }
-
-    return 0;
+    --itS;
 }
-
+else if (itS->first != itI->first)
+{
+    if (itS == databaseS.begin())
+    {
+        // No existe una fecha anterior
+        std::cout << "No encontrado" << std::endl;
+        continue;
+    }
+    --itS;
+}
 
 */
