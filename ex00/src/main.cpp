@@ -6,7 +6,7 @@
 /*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 09:49:55 by cacortes          #+#    #+#             */
-/*   Updated: 2026/09/30 21:20:01 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/01 14:33:15 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ int	isFloat(std::string lit)
 			if (lit[i + 1] == 'f')
 				return (1);
 		}
-		if ((!std::isdigit(lit[i]) && lit[i] != '.' && lit[i] != 'f') || f > 1 || p > 1)
+		if ((!std::isdigit(lit[i]) && lit[i] != '.') || f > 1 || p > 1)
 			return (1);
 		i++;
 	}
@@ -217,7 +217,7 @@ int	parse_line(std::string date, char separator, std::string value)
 	return (0);
 }
 
-std::map<std::string, float>	line_extractor(int fd, std::map<std::string, float> databaseI)
+std::multimap<std::string, float>	line_extractor(int fd, std::multimap<std::string, float> databaseI)
 {
 	char buffer[1024];
 	size_t n;
@@ -244,7 +244,8 @@ std::map<std::string, float>	line_extractor(int fd, std::map<std::string, float>
 				if (parse_line(date, separator, value))
 					throw std::runtime_error("Error: invalid line");
 				/*Al poner fuera que se capture el error se añade el return, en el lado del catch*/
-				databaseI[date] = std::strtof(value.c_str(), NULL);
+				float amount = std::strtof(value.c_str(), NULL);
+				databaseI.insert(std::make_pair(date, amount));
 				line.clear();
 			}
 			else
@@ -252,7 +253,7 @@ std::map<std::string, float>	line_extractor(int fd, std::map<std::string, float>
 		}
 	}
 	
-	// std::map<std::string, float>::iterator it;
+	// std::multimap<std::string, float>::iterator it;
 
 	// for (it = databaseI.begin(); it != databaseI.end(); it++)
 	// {
@@ -289,19 +290,19 @@ std::map<std::string, float> file_extractor(std::ifstream& file)
 
 		database[date] = std::strtof(value.c_str(), NULL);
 	}
-	/*
-	std::map<std::string, float>::iterator it;
+	
+	// std::map<std::string, float>::iterator it;
 
-	for (it = database.begin(); it != database.end(); it++)
-	{
-		std::cout << "Date: " << it->first << std::endl;
-		std::cout << "Value: " << it->second << std::endl;
-	}
-	*/
+	// for (it = database.begin(); it != database.end(); it++)
+	// {
+	// 	std::cout << "Date: " << it->first << std::endl;
+	// 	std::cout << "Value: " << it->second << std::endl;
+	// }
+	
 	return (database);
 }
 
-void	solution_printer(std::map<std::string, float> databaseI, std::map<std::string, float> databaseS)
+void	solution_printer(std::multimap<std::string, float> databaseI, std::map<std::string, float> databaseS)
 {
 	std::map<std::string, float>::iterator itI;
 
@@ -314,11 +315,22 @@ void	solution_printer(std::map<std::string, float> databaseI, std::map<std::stri
 		if (itS != databaseS.end())
 		{
 			float result = itI->second * itS->second;
-			if ()
 			std::cout << itI->first << " => " << itI->second << " = " << result << std::endl;
 		}
 		else
-			std::cout << "No encontrado" << std::endl;
+		{
+			itS = databaseS.lower_bound(itI->first);
+
+			if (itS == databaseS.begin())
+				--itS;
+			else if (itS->first != itI->first)
+			{
+				float result = itI->second * itS->second;
+				std::cout << itI->first << " => " << itI->second << " = " << result << std::endl;
+				continue;
+			}
+			--itS;
+		}
 	}
 }
 
@@ -337,7 +349,7 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 
-	std::map<std::string, float> databaseI;
+	std::multimap<std::string, float> databaseI;
 
 	databaseI = line_extractor(fd, databaseI);
 
