@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+         #
+#    By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/25 09:13:48 by cacortes          #+#    #+#              #
-#    Updated: 2026/09/25 09:59:40 by cacortes         ###   ########.fr        #
+#    Updated: 2026/10/02 11:22:25 by cacortes         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = src/main.cpp
+SRCS = src/main.cpp src/BitcoinExchange.cpp
 NAME = btc
 
 CC = c++
