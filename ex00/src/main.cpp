@@ -6,35 +6,29 @@
 /*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 09:49:55 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/02 20:06:04 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/04 23:14:42 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BitcoinExchange.hpp"
-#include <cctype>
-
-/*Check and process input lines*/
 
 int	check_date(int month, int day)
 {
-	(void)day;
 	if (month % 2 != 0)
 	{
-		std::cout << "Es impar" << std::endl;
-		if (month >= 7)
+		if (month > 7)
 		{
-			if (day != 31)
+			if (day != 30)
 				return (1);
 		}
 		else
 		{
-			if (day != 30)
+			if (day != 31)
 				return (1);
 		}
 	}
 	else
 	{
-		std::cout << "Es par" << std::endl;
 		if (month >= 8)
 		{
 			if (day != 31)
@@ -49,8 +43,22 @@ int	check_date(int month, int day)
 	return (0);
 }
 
-bool	isNumber(std::string str)
+bool	isNumberY(std::string str)
 {
+	if (str.size() != 4)
+		return false;
+	for (size_t i = 0; i < str.size(); i++)
+	{
+		if (!isdigit(str[i]))
+			return false;
+	}
+	return true;
+}
+
+bool isNumberDM(std::string str)
+{
+	if (str.size() != 2)
+		return false;
 	for (size_t i = 0; i < str.size(); i++)
 	{
 		if (!isdigit(str[i]))
@@ -85,11 +93,11 @@ int	date_parser(std::string date)
 	std::getline(line, month, '-');
 	std::getline(line, day, '-');
 
-	if (!isNumber(year))
+	if (!isNumberY(year))
 		return(1);
-	else if (!isNumber(month))
+	else if (!isNumberDM(month))
 		return(1);
-	else if (!isNumber(day))
+	else if (!isNumberDM(day))
 		return(1);
 	
 	int	Iyear;
@@ -119,15 +127,10 @@ int	date_parser(std::string date)
 		}
 		if (Iday == 31 || Iday == 30)
 		{
-			if (!check_date(Imonth, Iday))
+			if (check_date(Imonth, Iday))
 				return (1);
 		}
 	}
-
-
-	// std::cout << year << std::endl;
-	// std::cout << month << std::endl;
-	// std::cout << day << std::endl;
 	
 	return (0);
 }
@@ -161,21 +164,27 @@ int	isEsInt(std::string lit)
 
 	float result = std::strtof(lit.c_str(), NULL);
 	if (result < 0 || result > 1000)
-		return (1);
+	{
+		if (result < 0)
+			throw NegativeNumberExcepction();
+		else if (result > 1000)
+			throw OutOfRangeUpExcepction();
+	}
 	return (0);
 }
 
 int	isInt(std::string lit)
 {
 	size_t i = 0;
-	int	Ilit;
+	long	Ilit = 0;
+	char	*end;
 
 	if (lit.empty())
 		return (1);
 	if (lit[i] == '+')
 		i++;
 	else if (lit[i] == '-')
-		return (1);
+		throw NegativeNumberExcepction();
 	if (i == lit.length())
 		return (1);
 	while(i < lit.length())
@@ -184,26 +193,30 @@ int	isInt(std::string lit)
 			return (1);
 		i++;
 	}
-	std::istringstream(lit) >> Ilit;
-	if (Ilit < 0 || Ilit > 1000)
-		return (1);
+
+	Ilit = std::strtol(lit.c_str(), &end, 10);
+	if (Ilit < 0 || Ilit > 1000 || Ilit < INT_MIN || Ilit > INT_MAX)
+	{
+		if (Ilit < 0)
+			throw NegativeNumberExcepction();
+		else if (Ilit > 1000)
+			throw OutOfRangeUpExcepction();
+		else
+			throw OutOfRangeUpExcepction();
+	}
+	
 	
 	return (0);
 }
 
 int	value_parser(std::string value)
 {
-	std::cout << "\n" << std::endl;
-    std::cout << "isEsInt: " << isEsInt(value) << std::endl;
-    std::cout << "isInt: " << isInt(value) << std::endl;
+	if (!isInt(value))
+		return (0);
+	else if (!isEsInt(value))
+		return (0);
 	
-	if (!isEsInt(value))
-		std::cout << "float" << std::endl;
-	else if (!isInt(value))
-		std::cout << "Int" << std::endl;
-	else
-		return (1);
-	return (0);
+	return (1);
 }
 
 int	parse_line(std::string date, char separator, std::string value)
@@ -217,9 +230,10 @@ int	parse_line(std::string date, char separator, std::string value)
 	return (0);
 }
 
-void	solution_printer(std::string date, float amount, std::map<std::string, float> databaseS)
+void	solution_printer(const std::string& date, std::string& value, std::map<std::string, float>& databaseS)
 {
 	std::map<std::string, float>::iterator itS;
+	float amount = std::strtof(value.c_str(), NULL);
 
 		itS = databaseS.find(date);
 
@@ -232,26 +246,34 @@ void	solution_printer(std::string date, float amount, std::map<std::string, floa
 		{
 			itS = databaseS.lower_bound(date);
 
-			if (itS == databaseS.begin())
+			if (itS == databaseS.end())
 				--itS;
 			else if (itS->first != date)
 			{
-				float result = amount * itS->second;
-				std::cout << date << " => " << amount << " = " << result << std::endl;
+				if(itS == databaseS.begin())
+					throw NoPreviousNumberExcepction();
+				else
+					--itS;
 			}
-			--itS;
+			float result = amount * itS->second;
+			std::cout << date << " => " << amount << " = " << result << std::endl;
+
 		}
 }
 
-std::multimap<std::string, float>	line_extractor(int fd, std::multimap<std::string, float> databaseI, std::map<std::string, float> databaseS)
+int	check_header(std::string line)
+{
+	if (line == "date | value")
+		return (1);
+	return (0);
+}
+
+void line_extractor(int fd, std::map<std::string, float> databaseS)
 {
 	char buffer[1024];
 	size_t n;
 	std::string line;
-
-	std::string date;
-	char separator;
-	std::string value;
+	bool first_line = true;
 
 	while ((n = read(fd, buffer, sizeof(buffer))) > 0)
 	{
@@ -259,23 +281,31 @@ std::multimap<std::string, float>	line_extractor(int fd, std::multimap<std::stri
 		{
 			if (buffer[i] == '\n')
 			{
-				std::istringstream iss(line);
-				iss >> date >> separator >> value;
+				if (first_line)
+				{
+					if (!check_header(line))
+						throw BadHeaderExcepction();
+
+					first_line = false;
+					line.clear();
+					continue;
+				}
+				std::string date;
+				char separator = '\0';
+				std::string value;
+				std::string trash;
 				
-				// std::cout << date << std::endl;
-				// std::cout << separator << std::endl;
-				// std::cout << value << std::endl;
-				// std::cout << "\n" << std::endl;
+				std::istringstream iss(line);
+				iss >> date >> separator >> value >> trash;
+				
 				try
 				{
+					if (!trash.empty() || !separator || value.empty() || date.empty())
+						throw BadFormatException(date, separator, value, trash);
+					
 					if (parse_line(date, separator, value))
-					{
-						std::cout << "ERROR" << std::endl;
-						throw BadFormatExcepction();
-					}
-					float amount = std::strtof(value.c_str(), NULL);
-					std::multimap<std::string, float>::iterator it = databaseI.insert(std::make_pair(date, amount));
-					solution_printer(it->first, it->second, databaseS);
+						throw BadFormatException(date, separator, value, trash);
+					solution_printer(date, value, databaseS);
 				}
 				catch (std::exception & e)
 				{
@@ -287,24 +317,9 @@ std::multimap<std::string, float>	line_extractor(int fd, std::multimap<std::stri
 				line += buffer[i];
 		}
 	}
-	
-	// std::multimap<std::string, float>::iterator it;
 
-	// for (it = databaseI.begin(); it != databaseI.end(); it++)
-	// {
-	// 	std::cout << "Date: " << it->first << std::endl;
-	// 	std::cout << "Value: " << it->second << std::endl;
-	// }
-
-	
-	/*if (!line.empty())
-		std::cout << "LINEA: " << line << std::endl;*/
-
-	return (databaseI);
 }
 
-
-/*Check and process csv lines*/
 
 std::map<std::string, float> file_extractor(std::ifstream& file)
 {
@@ -326,22 +341,12 @@ std::map<std::string, float> file_extractor(std::ifstream& file)
 		database[date] = std::strtof(value.c_str(), NULL);
 	}
 	
-	// std::map<std::string, float>::iterator it;
-
-	// for (it = database.begin(); it != database.end(); it++)
-	// {
-	// 	std::cout << "Date: " << it->first << std::endl;
-	// 	std::cout << "Value: " << it->second << std::endl;
-	// }
-	
 	return (database);
 }
 
 
 int	main(int argc, char **argv)
-{
-	int	fd = open(argv[1], O_RDONLY);
-	
+{	
 	try
 	{
 		if (argc != 2)
@@ -349,74 +354,33 @@ int	main(int argc, char **argv)
 			throw BadFileExcepction();
 			return (1);
 		}
+		int	fd = open(argv[1], O_RDONLY);
 		if (fd == -1)
 		{
 			throw BadFileExcepction();
 			return (1);
 		}
+
+		std::ifstream file("data.csv");
+		std::map<std::string, float> databaseS;
+		
+		if (!file.is_open())
+		{
+			throw BadFileExcepction();
+			return (1);
+		}
+		else
+			databaseS = file_extractor(file);
+
+		line_extractor(fd, databaseS);
+
+		close(fd);
 	}
 	catch (const std::exception &e)
 	{
 		std::cerr << "Error: " << e.what() << std::endl;
-	}
-
-	std::ifstream file("data.csv");
-	std::map<std::string, float> databaseS;
-		
-	if (!file.is_open())
-	{
-		throw BadFileExcepction();
 		return (1);
 	}
-	else
-		databaseS = file_extractor(file);
-
-	std::multimap<std::string, float> databaseI;
-
-	databaseI = line_extractor(fd, databaseI, databaseS);
-
-		
-	//solution_printer(databaseI, databaseS);	
-
-	close(fd);
-
-
-
+	
 	return (0);
 }
-
-
-/*
-
-#include <iostream>
-#include <map>
-#include <string>
-
-struct Persona
-{
-    std::string nombre;
-    int edad;
-    double altura;
-};
-
-int main()
-{
-    std::multimap<int, Persona> personas;
-
-    Persona p1;
-    p1.nombre = "Juan";
-    p1.edad = 25;
-    p1.altura = 1.75;
-
-    Persona p2;
-    p2.nombre = "Ana";
-    p2.edad = 30;
-    p2.altura = 1.68;
-
-    personas.insert(std::make_pair(1, p1));
-    personas.insert(std::make_pair(1, p2));
-
-    return 0;
-}
-
-*/

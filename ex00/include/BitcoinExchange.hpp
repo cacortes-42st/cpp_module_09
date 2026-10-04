@@ -27,16 +27,8 @@
 #include <fstream>
 #include <map>
 
-struct	ErrorFlag
-{
-	float	value;
-	bool	NegativeNumber;
-	bool	OutOfRangeUp;
-	bool	OutOfRangeDown;
-	bool	BadFormat;
-
-	ErrorFlag() : value (0), NegativeNumber(false), OutOfRangeUp(false), OutOfRangeDown(false), BadFormat(false) {}
-};
+/*For de ints*/
+#include <climits>
 
 class	BadFileExcepction : public std::exception
 {
@@ -53,15 +45,24 @@ class   OutOfRangeUpExcepction : public std::exception
 	const char *what() const throw();
 };
 
-class   OutOfRangeDownExcepction : public std::exception
+class	BadFormatException : public std::exception
+{
+	private:
+		std::string message;
+	public:
+		BadFormatException(std::string &date, char separator, std::string &value, std::string &trash);
+		~BadFormatException() throw();
+		const char *what() const throw();
+};
+
+class   BadHeaderExcepction : public std::exception
 {
 	const char *what() const throw();
 };
 
-class	BadFormatExcepction : public std::exception
+class   NoPreviousNumberExcepction : public std::exception
 {
 	const char *what() const throw();
 };
-
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BitcoinExchange.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 09:50:31 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/02 11:28:02 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/04 23:01:46 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,31 @@ const char* OutOfRangeUpExcepction::what() const throw()
     return "too large a number.";
 }
 
-const char* OutOfRangeDownExcepction::what() const throw()
+
+BadFormatException::BadFormatException(std::string &date, char separator, std::string &value, std::string &trash) : message("")
 {
-    return "too low a number.";
+	if (trash.empty() && !separator && value.empty() && date.empty())
+		message = "bad input.";
+	else
+		message = "bad input => " + date + " " + separator + " " + value + " " + trash;
 }
 
-const char* BadFormatExcepction::what() const throw()
+BadFormatException::~BadFormatException() throw()
 {
-    return "bad input";
+}
+
+const char* BadFormatException::what() const throw()
+{
+    return message.c_str();
 }
 
 
+const char* BadHeaderExcepction::what() const throw()
+{
+    return "The header input file is incorrect.";
+}
+
+const char* NoPreviousNumberExcepction::what() const throw()
+{
+    return "No previous date exists.";
+}
