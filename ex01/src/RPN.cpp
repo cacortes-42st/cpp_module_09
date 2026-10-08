@@ -6,7 +6,12 @@
 /*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 10:49:33 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/06 10:49:34 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/08 22:28:35 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "RPN.hpp"
+
+solution_box::solution_box() : final_result(0)
+{
+}

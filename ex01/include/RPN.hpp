@@ -6,7 +6,7 @@
 /*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 10:48:52 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/07 10:51:26 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/08 22:27:45 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,13 @@
 
 /*For the stack container*/
 #include <stack>
+
+
+struct	solution_box
+{
+	int	final_result;
+
+	solution_box();
+};
 
 #endif
