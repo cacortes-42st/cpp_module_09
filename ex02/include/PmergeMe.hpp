@@ -6,7 +6,7 @@
 /*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:35 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/10 19:09:10 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/11 17:10:11 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,41 +24,78 @@
 /*For the stream*/
 #include <sstream>
 
+/*For strcpy*/
+#include <cstring>
+
+struct PairNumbers
+{
+	int	BigNumber;
+	int	SmallNumber;
+	int	IdNumber;
+
+	PairNumbers();
+	PairNumbers(int Big, int Small, int id);
+};
+
 int	MyAtoi(std::string str);
+char	**int_to_char(const std::vector<int> &values);
 
 template <typename T>
+
+// void	binary_insertion(T &Container, char** Big)
+// {
+	
+// }
 void	pair_creator(T &Container, char **numbers, int argc)
 {
-	Container<std::pair<int, int>> box;
+	std::vector<int> BigOnes;
+	std::vector<int> SmallOnes;
+	std::vector<int> result;
 
-	for (int i = 1; i < argc; i++)
+	for (int i = 0, j = 0; i < argc; i += 2, ++j)
 	{
-		int firstA = MyAtoi(numbers[i]);
-		int secondA = MyAtoi(numbers[i + 1]);
+		if (i + 1 <= argc)
+		{
+			int first = MyAtoi(numbers[i]);
+			int second = MyAtoi(numbers[i + 1]);
 
-		
-		if (i + 1 <= argc && first >= second)
-		{
-			BigContainer.push_back(first);
-			SmallContainer.push_back(second);
-			i += 1;
-		}
-		else if (i + 1 <= argc)
-		{
-			BigContainer.push_back(second);
-			SmallContainer.push_back(first);
-			i += 1;			
+			if (first >= second)
+			{
+				Container.push_back(PairNumbers(first, second, j));
+				BigOnes.push_back(first);
+				SmallOnes.push_back(second);
+			}
+			else
+			{
+				Container.push_back(PairNumbers(second, first, j));
+				BigOnes.push_back(second);
+				SmallOnes.push_back(first);
+			}
 		}
 	}
 
-	//std::cout << "PARSE1" << std::endl;
-	for (size_t i = 0; i < BigContainer.size(); i++)
-		std::cout << BigContainer[i] << " ";
-	std::cout << "BIG" << std::endl;
+	if (BigOnes.size() > 1)
+	{
+		std::vector<PairNumbers> Pair;
+		char **Big = int_to_char(BigOnes);
+		pair_creator(Pair, Big, BigOnes.size());
+	}
+
+	result = BigOnes;
+
+	result.push_back(Container[0].SmallNumber);
+
+	for (size_t i = 0; i < result.size(); ++i)
+    	std::cout << result[i] << ' ';
+
+	std::cout << '\n';
+	//binary_insertion()
 	
-	for (size_t i = 0; i < SmallContainer.size(); i++)
-		std::cout << SmallContainer[i] << " ";
-	std::cout << "SMALL" << std::endl;
+	for (size_t i = 0; i < Container.size(); ++i)
+    	std::cout << "BigNumber: " << Container[i].BigNumber << " " 
+					<< "SmallNumber: " << Container[i].SmallNumber << " "
+					<< "IdNumber: " << Container[i].IdNumber << '\n';
+
 }
 
 #endif
