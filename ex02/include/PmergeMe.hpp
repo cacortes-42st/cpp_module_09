@@ -6,7 +6,7 @@
 /*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:35 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/11 17:10:11 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/12 20:23:39 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ struct PairNumbers
 
 int	MyAtoi(std::string str);
 char	**int_to_char(const std::vector<int> &values);
+void binary_insertion(int target, std::vector<int>& numbers);
+std::vector<int>	jacky_secuency(int	argc);
+std::vector<int> jacky_resolution(std::vector<int> littleOnes,
+                                  std::vector<int> jacky);
 
 template <typename T>
 
@@ -85,11 +89,18 @@ void	pair_creator(T &Container, char **numbers, int argc)
 
 	result.push_back(Container[0].SmallNumber);
 
+	// for (size_t i = 0; i < result.size(); ++i)
+    // 	std::cout << result[i] << ' ';
+
+	std::vector<int> JackyNumbers = jacky_secuency(argc);
+	std::vector<int> SmallOnesOrg = jacky_resolution(SmallOnes, JackyNumbers);
+
+	for(size_t i = 0; i < SmallOnesOrg.size(); i++)
+		binary_insertion(SmallOnesOrg[i], result);
+
 	for (size_t i = 0; i < result.size(); ++i)
     	std::cout << result[i] << ' ';
-
-	std::cout << '\n';
-	//binary_insertion()
+	std::cout << "\n";
 	
 	for (size_t i = 0; i < Container.size(); ++i)
     	std::cout << "BigNumber: " << Container[i].BigNumber << " " 

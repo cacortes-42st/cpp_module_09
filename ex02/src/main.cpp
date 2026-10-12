@@ -6,7 +6,7 @@
 /*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:05 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/12 14:00:04 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/12 19:38:07 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,29 +51,6 @@ char	**int_to_char(const std::vector<int> &values)
 	result[values.size()] = NULL;
 	return result;
 }
-
-// std::vector<int>	jacky_resolution(std::vector<int> littleOnes, std::vector<int> jacky)
-// {
-// 	std::vector<int> numbers;
-// 	std::vector<int> result;
-
-// 	int j = 0;
-// 	for (size_t i = 0; i < jacky.size(); i++)
-// 	{
-// 		while(littleOnes[j] < jacky[i] && littleOnes[j] < jacky[i + 1])
-// 		{
-// 			numbers.push_back(littleOnes[j]);
-// 			j++;
-// 		}
-// 		result = numbers;
-// 	}
-// 	for (size_t i = 0; i < result.size(); ++i)
-//     	std::cout << "Numbers: " << result[i] << '\n';
-
-// 	std::cout << "PARSE1" << std::endl;
-// 	return (result);
-// }
-
 
 std::vector<int> jacky_resolution(std::vector<int> littleOnes,
                                   std::vector<int> jacky)
@@ -131,7 +108,7 @@ std::vector<int>	jacky_secuency(int	argc)
 	return(jacky);
 }
 
-void binary_search(int target, const std::vector<int>& numbers)
+void binary_insertion(int target, std::vector<int>& numbers)
 {
     size_t first = 0;
     size_t second = numbers.size();
@@ -141,21 +118,12 @@ void binary_search(int target, const std::vector<int>& numbers)
         size_t pos = first + (second - first) / 2;
 
         if (numbers[pos] < target)
-        {
             first = pos + 1;
-        }
-        else if (numbers[pos] > target)
-        {
-            second = pos;
-        }
         else
-        {
-            std::cout << "Number found at index: " << pos << '\n';
-            return;
-        }
+            second = pos;
     }
 
-    std::cout << "Number not found\n";
+    numbers.insert(numbers.begin() + first, target);
 }
 
 int	main(int argc, char **argv)
@@ -176,24 +144,24 @@ int	main(int argc, char **argv)
 	}
 
 	std::vector<PairNumbers> Cont1;
-	//pair_creator(Cont1, argv + 1, argc - 1);
-	std::vector<int> jacob; 
-	jacob = jacky_secuency(argc - 1);
+	pair_creator(Cont1, argv + 1, argc - 1);
+	// std::vector<int> jacob; 
+	// jacob = jacky_secuency(argc - 1);
 
-	std::vector<int> numeros;
+	// std::vector<int> numeros;
 	
-	numeros.push_back(2);
-	numeros.push_back(9);
-	numeros.push_back(4);
-	numeros.push_back(1);
-	numeros.push_back(3);
+	// numeros.push_back(3);
+	// numeros.push_back(7);
+	// numeros.push_back(12);
+	// numeros.push_back(18);
+	// numeros.push_back(24);
 
-	binary_search(1, numeros);
-	//jacky_resolution(numeros, jacob);
-	// for (int i = 1; i < argc ; i++)
-	// {
-	// 	std::cout << "CONTENT: " << argv[i] << std::endl;
-	// }
+	// binary_insertion(24, numeros);
+	// //jacky_resolution(numeros, jacob);
+	// // for (int i = 1; i < argc ; i++)
+	// // {
+	// // 	std::cout << "CONTENT: " << argv[i] << std::endl;
+	// // }
 
 
 	return (0);
