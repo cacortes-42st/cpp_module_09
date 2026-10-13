@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:35 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/12 20:23:39 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/13 11:36:58 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,15 +50,15 @@ template <typename T>
 // {
 	
 // }
-void	pair_creator(T &Container, char **numbers, int argc)
+std::vector<int>	pair_creator(T &Container, char **numbers, int argc)
 {
 	std::vector<int> BigOnes;
 	std::vector<int> SmallOnes;
 	std::vector<int> result;
-
+	
 	for (int i = 0, j = 0; i < argc; i += 2, ++j)
 	{
-		if (i + 1 <= argc)
+		if (i + 1 < argc)
 		{
 			int first = MyAtoi(numbers[i]);
 			int second = MyAtoi(numbers[i + 1]);
@@ -82,16 +82,19 @@ void	pair_creator(T &Container, char **numbers, int argc)
 	{
 		std::vector<PairNumbers> Pair;
 		char **Big = int_to_char(BigOnes);
-		pair_creator(Pair, Big, BigOnes.size());
+		BigOnes = pair_creator(Pair, Big, BigOnes.size());
 	}
 
 	result = BigOnes;
 
-	result.push_back(Container[0].SmallNumber);
+	result.insert(result.begin(), Container[0].SmallNumber);
 
-	// for (size_t i = 0; i < result.size(); ++i)
-    // 	std::cout << result[i] << ' ';
+	for (size_t i = 0; i < result.size(); ++i)
+    	std::cout << result[i] << ' ';
+	std::cout << "\n";
 
+	if (result.size() <= 2)
+		return (result);
 	std::vector<int> JackyNumbers = jacky_secuency(argc);
 	std::vector<int> SmallOnesOrg = jacky_resolution(SmallOnes, JackyNumbers);
 
@@ -107,6 +110,7 @@ void	pair_creator(T &Container, char **numbers, int argc)
 					<< "SmallNumber: " << Container[i].SmallNumber << " "
 					<< "IdNumber: " << Container[i].IdNumber << '\n';
 
+	return (BigOnes);
 }
 
 #endif

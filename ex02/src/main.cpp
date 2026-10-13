@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:05 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/12 19:38:07 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/13 11:45:09 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,18 +92,28 @@ std::vector<int>	jacky_secuency(int	argc)
 {
 	std::vector<int>	jacky;
 
-	for (int i = 0; i < argc; i++)
+	if (argc <= 0)
+		return jacky;
+		
+	jacky.push_back(0);
+
+	if (argc == 1)
+		return jacky;
+
+	jacky.push_back(1);
+	
+	for (int i = 2; i < argc; i++)
 	{
-		if (i == 0)
-			jacky.push_back(0);
-		else if (i == 1)
-			jacky.push_back(1);
-		else
+		// if (i == 0)
+		// 	jacky.push_back(0);
+		// else if (i == 1)
+		// 	jacky.push_back(1);
+		// else
 			jacky.push_back(jacky[i - 1] + 2 * jacky[i - 2]);
 	}
 
-	// for (int i = 0; i < argc; i++)
-	// 	std::cout << jacky[i] << std::endl;
+	for (int i = 0; i < argc; i++)
+		std::cout << jacky[i] << std::endl;
 
 	return(jacky);
 }
@@ -134,6 +144,7 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 
+
 	for (int i = 1; i < argc ; i++)
 	{
 		if (argument_parsing(argv[i]))
@@ -142,7 +153,7 @@ int	main(int argc, char **argv)
 			return (1);
 		}
 	}
-
+	
 	std::vector<PairNumbers> Cont1;
 	pair_creator(Cont1, argv + 1, argc - 1);
 	// std::vector<int> jacob; 
