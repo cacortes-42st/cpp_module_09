@@ -6,7 +6,7 @@
 /*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:05 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/13 11:45:09 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/13 14:54:08 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,24 +91,14 @@ std::vector<int> jacky_resolution(std::vector<int> littleOnes,
 std::vector<int>	jacky_secuency(int	argc)
 {
 	std::vector<int>	jacky;
-
-	if (argc <= 0)
-		return jacky;
-		
-	jacky.push_back(0);
-
-	if (argc == 1)
-		return jacky;
-
-	jacky.push_back(1);
 	
-	for (int i = 2; i < argc; i++)
+	for (int i = 0; i < argc; i++)
 	{
-		// if (i == 0)
-		// 	jacky.push_back(0);
-		// else if (i == 1)
-		// 	jacky.push_back(1);
-		// else
+		if (i == 0)
+			jacky.push_back(0);
+		else if (i == 1)
+			jacky.push_back(1);
+		else
 			jacky.push_back(jacky[i - 1] + 2 * jacky[i - 2]);
 	}
 

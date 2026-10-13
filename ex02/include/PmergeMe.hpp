@@ -6,7 +6,7 @@
 /*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:35 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/13 11:36:58 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/13 14:46:11 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ std::vector<int>	pair_creator(T &Container, char **numbers, int argc)
 
 	result.insert(result.begin(), Container[0].SmallNumber);
 
+	std::cout << "FIRST" << std::endl;
 	for (size_t i = 0; i < result.size(); ++i)
     	std::cout << result[i] << ' ';
 	std::cout << "\n";
@@ -98,9 +99,18 @@ std::vector<int>	pair_creator(T &Container, char **numbers, int argc)
 	std::vector<int> JackyNumbers = jacky_secuency(argc);
 	std::vector<int> SmallOnesOrg = jacky_resolution(SmallOnes, JackyNumbers);
 
+	std::cout << "THIRD" << std::endl;
+	for (size_t i = 0; i < result.size(); ++i)
+    	std::cout << result[i] << ' ';
+	std::cout << "\n";
+	std::cout << "THIRD1" << std::endl;
+	for (size_t i = 0; i < result.size(); ++i)
+    	std::cout << SmallOnes[i] << ' ';
+	std::cout << "\n";
 	for(size_t i = 0; i < SmallOnesOrg.size(); i++)
 		binary_insertion(SmallOnesOrg[i], result);
 
+	std::cout << "SECOND" << std::endl;
 	for (size_t i = 0; i < result.size(); ++i)
     	std::cout << result[i] << ' ';
 	std::cout << "\n";
@@ -110,7 +120,7 @@ std::vector<int>	pair_creator(T &Container, char **numbers, int argc)
 					<< "SmallNumber: " << Container[i].SmallNumber << " "
 					<< "IdNumber: " << Container[i].IdNumber << '\n';
 
-	return (BigOnes);
+	return (result);
 }
 
 #endif
