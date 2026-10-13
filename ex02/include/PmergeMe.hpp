@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:35 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/13 14:46:11 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/13 22:56:41 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,18 +43,36 @@ void binary_insertion(int target, std::vector<int>& numbers);
 std::vector<int>	jacky_secuency(int	argc);
 std::vector<int> jacky_resolution(std::vector<int> littleOnes,
                                   std::vector<int> jacky);
+int FindSmallNumberById(
+    const std::vector<PairNumbers>& Numbers,
+    int id);
 
 template <typename T>
 
-// void	binary_insertion(T &Container, char** Big)
-// {
-	
-// }
+
+T	&chair_function(T &Container, std::vector<int> &BigOnes)
+{
+	for (size_t i = 0; i < BigOnes.size(); i++)
+	{
+		for (size_t j = 0; j < Container.size(); j++)
+		{
+			if (BigOnes[i] == Container[j].BigNumber)
+			{
+				Container[j].IdNumber = i;
+				continue;
+			}
+		}
+	}
+	return Container;
+}
+
+template <typename T>
 std::vector<int>	pair_creator(T &Container, char **numbers, int argc)
 {
 	std::vector<int> BigOnes;
 	std::vector<int> SmallOnes;
 	std::vector<int> result;
+	int	leftover = 0;
 	
 	for (int i = 0, j = 0; i < argc; i += 2, ++j)
 	{
@@ -76,6 +94,8 @@ std::vector<int>	pair_creator(T &Container, char **numbers, int argc)
 				SmallOnes.push_back(first);
 			}
 		}
+		else
+			leftover = MyAtoi(numbers[i]);
 	}
 
 	if (BigOnes.size() > 1)
@@ -87,38 +107,85 @@ std::vector<int>	pair_creator(T &Container, char **numbers, int argc)
 
 	result = BigOnes;
 
-	result.insert(result.begin(), Container[0].SmallNumber);
+	Container = chair_function(Container, BigOnes);
+	
+	// int smaller;
 
-	std::cout << "FIRST" << std::endl;
-	for (size_t i = 0; i < result.size(); ++i)
-    	std::cout << result[i] << ' ';
-	std::cout << "\n";
+	// if (FindSmallNumberById(Container, 0, smaller))
+	// {
+    // 	result.insert(result.begin(), smaller);
+	// 	std::cout << "SMALLER: " << smaller << std::endl;
+	// }
+	// else
+	// {
+    // 	std::cerr << "Error: no se encontro el IdNumber 0\n";
+    // 	return result;
+	// }
+	int smaller = FindSmallNumberById(Container, 0);
+
+	std::cout << "SMALLER VALUE: " << smaller << std::endl;
+	if (smaller < 1)
+		std::cout << "ERROR" << std::endl;
+	else
+		result.insert(result.begin(), smaller);
+
+	for (size_t i = 0; i < SmallOnes.size(); i++)
+	{
+    	if (SmallOnes[i] == smaller)
+    	{
+        	SmallOnes.erase(SmallOnes.begin() + i);
+        	break;
+    	}
+	}
+	
+	// for (size_t i = 0; i < result.size(); ++i)
+    // 	std::cout << result[i] << ' ';
+	// std::cout << "\n";
 
 	if (result.size() <= 2)
+	{
+		if (leftover != 0)
+		{
+			//std::cout << "FIRST" << std::endl;
+			binary_insertion(leftover, result);
+			// for (size_t i = 0; i < result.size(); ++i)
+    		// 	std::cout << result[i] << ' ';
+			// std::cout << "\n";
+		}
 		return (result);
+	}
 	std::vector<int> JackyNumbers = jacky_secuency(argc);
 	std::vector<int> SmallOnesOrg = jacky_resolution(SmallOnes, JackyNumbers);
 
-	std::cout << "THIRD" << std::endl;
-	for (size_t i = 0; i < result.size(); ++i)
-    	std::cout << result[i] << ' ';
-	std::cout << "\n";
-	std::cout << "THIRD1" << std::endl;
-	for (size_t i = 0; i < result.size(); ++i)
-    	std::cout << SmallOnes[i] << ' ';
-	std::cout << "\n";
+	// for (size_t i = 0; i < result.size(); ++i)
+    // 	std::cout << result[i] << ' ';
+	// std::cout << "\n";
+
+	// for (size_t i = 0; i < result.size(); ++i)
+    // 	std::cout << SmallOnes[i] << ' ';
+	// std::cout << "\n";
+	
 	for(size_t i = 0; i < SmallOnesOrg.size(); i++)
 		binary_insertion(SmallOnesOrg[i], result);
 
-	std::cout << "SECOND" << std::endl;
-	for (size_t i = 0; i < result.size(); ++i)
-    	std::cout << result[i] << ' ';
-	std::cout << "\n";
+	if (leftover != 0)
+	{
+			//std::cout << "FIRST" << std::endl;
+		binary_insertion(leftover, result);
+			// for (size_t i = 0; i < result.size(); ++i)
+    		// 	std::cout << result[i] << ' ';
+			// std::cout << "\n";
+	}
+	//binary_insertion(leftover, result);
+
+	// for (size_t i = 0; i < result.size(); ++i)
+    // 	std::cout << result[i] << ' ';
+	// std::cout << "\n";
 	
-	for (size_t i = 0; i < Container.size(); ++i)
-    	std::cout << "BigNumber: " << Container[i].BigNumber << " " 
-					<< "SmallNumber: " << Container[i].SmallNumber << " "
-					<< "IdNumber: " << Container[i].IdNumber << '\n';
+	// for (size_t i = 0; i < Container.size(); ++i)
+    // 	std::cout << "BigNumber: " << Container[i].BigNumber << " " 
+	// 				<< "SmallNumber: " << Container[i].SmallNumber << " "
+	// 				<< "IdNumber: " << Container[i].IdNumber << '\n';
 
 	return (result);
 }

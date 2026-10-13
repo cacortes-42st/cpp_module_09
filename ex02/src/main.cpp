@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:05 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/13 14:54:08 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/13 22:54:32 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ std::vector<int> jacky_resolution(std::vector<int> littleOnes,
     for (size_t i = 0; i < jacky.size(); ++i)
     {
         size_t current = jacky[i];
-
+		
         if (current > littleOnes.size())
             current = littleOnes.size();
 
@@ -82,8 +82,8 @@ std::vector<int> jacky_resolution(std::vector<int> littleOnes,
             break;
     }
 
-    for (size_t i = 0; i < result.size(); ++i)
-        std::cout << "Numbers: " << result[i] << '\n';
+    // for (size_t i = 0; i < result.size(); ++i)
+    //     std::cout << "Numbers: " << result[i] << '\n';
 
     return result;
 }
@@ -102,8 +102,8 @@ std::vector<int>	jacky_secuency(int	argc)
 			jacky.push_back(jacky[i - 1] + 2 * jacky[i - 2]);
 	}
 
-	for (int i = 0; i < argc; i++)
-		std::cout << jacky[i] << std::endl;
+	// for (int i = 0; i < argc; i++)
+	// 	std::cout << jacky[i] << std::endl;
 
 	return(jacky);
 }
@@ -125,6 +125,47 @@ void binary_insertion(int target, std::vector<int>& numbers)
 
     numbers.insert(numbers.begin() + first, target);
 }
+// bool FindSmallNumberById(
+//     const std::vector<PairNumbers>& Numbers,
+//     int id,
+//     int& result)
+// {
+//     for (size_t i = 0; i < Numbers.size(); i++)
+//     {
+//         if (Numbers[i].IdNumber == id)
+//         {
+//             result = Numbers[i].SmallNumber;
+//             return true;
+//         }
+//     }
+//     return false;
+// }
+int FindSmallNumberById(const std::vector<PairNumbers>& Numbers, int id)
+{
+    for (size_t i = 0; i < Numbers.size(); i++)
+    {
+        if (Numbers[i].IdNumber == id)
+        {
+            return Numbers[i].SmallNumber;
+        }
+    }
+
+    return -1;
+}
+
+void	result_cleaner(std::vector<int> base)
+{
+	std::vector<int> result;
+	for (size_t i = 0; i < base.size(); i++)
+	{
+		if (base[i] < 1)
+			continue;
+		result.push_back(base[i]);
+	}
+	for (size_t i = 0; i < result.size(); ++i)
+    	std::cout << result[i] << ' ';
+	std::cout << "\n";
+}
 
 int	main(int argc, char **argv)
 {
@@ -145,24 +186,9 @@ int	main(int argc, char **argv)
 	}
 	
 	std::vector<PairNumbers> Cont1;
-	pair_creator(Cont1, argv + 1, argc - 1);
-	// std::vector<int> jacob; 
-	// jacob = jacky_secuency(argc - 1);
-
-	// std::vector<int> numeros;
-	
-	// numeros.push_back(3);
-	// numeros.push_back(7);
-	// numeros.push_back(12);
-	// numeros.push_back(18);
-	// numeros.push_back(24);
-
-	// binary_insertion(24, numeros);
-	// //jacky_resolution(numeros, jacob);
-	// // for (int i = 1; i < argc ; i++)
-	// // {
-	// // 	std::cout << "CONTENT: " << argv[i] << std::endl;
-	// // }
+	std::vector<int> result;
+	result = pair_creator(Cont1, argv + 1, argc - 1);
+	result_cleaner(result);
 
 
 	return (0);
