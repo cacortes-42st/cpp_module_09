@@ -7,3 +7,4 @@ ex02, cuidado cuando se comparan direcciones de memoria en vez de los números e
 
 https://github.com/leske42/CPP09
 https://github.com/0x416c6941/cpp09/tree/main/cpp09/ex00
+https://github.com/tigran-sargsyan-w/cpp-module-09#ex02--pmergeme

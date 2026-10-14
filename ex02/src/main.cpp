@@ -6,21 +6,11 @@
 /*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:05 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/13 22:54:32 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/14 21:31:15 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
-
-int	argument_parsing(std::string numbers)
-{
-	for (size_t i = 0; i < numbers.size() ; i++)
-	{
-		if (!std::isdigit(numbers[i]) || numbers[i] <= 0)
-			return (1);
-	}
-	return (0);
-}
 
 int	MyAtoi(std::string str)
 {
@@ -33,23 +23,23 @@ int	MyAtoi(std::string str)
 	return (number);
 }
 
-char	**int_to_char(const std::vector<int> &values)
+int	argument_parsing(std::string numbers)
 {
-	char	**result = new char*[values.size() + 1];
+	char	*end;
 
-	for (size_t i = 0; i < values.size(); ++i)
-	{
-		std::ostringstream stream;
-		stream << values[i];
+	long	Inum = std::strtol(numbers.c_str(), &end, 10);
 
-		std::string str = stream.str();
+	if (*end != '\0' || Inum > INT_MAX || Inum <= 0)
+		return(1);
+	return (0);
+}
 
-		result[i] = new char[str.size() + 1];
-		std::strcpy(result[i], str.c_str());
-	}
-
-	result[values.size()] = NULL;
-	return result;
+int	argument_printer(char **numbers, int argc)
+{
+	for (int i = 1; i < argc; i++)
+		std::cout << numbers[i] << " ";
+	std::cout << "\n";
+	return (0);
 }
 
 std::vector<int> jacky_resolution(std::vector<int> littleOnes,
@@ -82,9 +72,6 @@ std::vector<int> jacky_resolution(std::vector<int> littleOnes,
             break;
     }
 
-    // for (size_t i = 0; i < result.size(); ++i)
-    //     std::cout << "Numbers: " << result[i] << '\n';
-
     return result;
 }
 
@@ -101,9 +88,6 @@ std::vector<int>	jacky_secuency(int	argc)
 		else
 			jacky.push_back(jacky[i - 1] + 2 * jacky[i - 2]);
 	}
-
-	// for (int i = 0; i < argc; i++)
-	// 	std::cout << jacky[i] << std::endl;
 
 	return(jacky);
 }
@@ -125,46 +109,15 @@ void binary_insertion(int target, std::vector<int>& numbers)
 
     numbers.insert(numbers.begin() + first, target);
 }
-// bool FindSmallNumberById(
-//     const std::vector<PairNumbers>& Numbers,
-//     int id,
-//     int& result)
-// {
-//     for (size_t i = 0; i < Numbers.size(); i++)
-//     {
-//         if (Numbers[i].IdNumber == id)
-//         {
-//             result = Numbers[i].SmallNumber;
-//             return true;
-//         }
-//     }
-//     return false;
-// }
-int FindSmallNumberById(const std::vector<PairNumbers>& Numbers, int id)
-{
-    for (size_t i = 0; i < Numbers.size(); i++)
-    {
-        if (Numbers[i].IdNumber == id)
-        {
-            return Numbers[i].SmallNumber;
-        }
-    }
 
-    return -1;
-}
-
-void	result_cleaner(std::vector<int> base)
+void	free_char(char **result)
 {
-	std::vector<int> result;
-	for (size_t i = 0; i < base.size(); i++)
-	{
-		if (base[i] < 1)
-			continue;
-		result.push_back(base[i]);
-	}
-	for (size_t i = 0; i < result.size(); ++i)
-    	std::cout << result[i] << ' ';
-	std::cout << "\n";
+	if (!result)
+		return ;
+    for (size_t i = 0; result[i] != NULL; ++i)
+        delete[] result[i];
+
+    delete[] result;
 }
 
 int	main(int argc, char **argv)
@@ -180,42 +133,40 @@ int	main(int argc, char **argv)
 	{
 		if (argument_parsing(argv[i]))
 		{
-			std::cout << "The argument is not a valid integer." << std::endl;
+			std::cout << "Error." << std::endl;
 			return (1);
 		}
 	}
 	
-	std::vector<PairNumbers> Cont1;
-	std::vector<int> result;
-	result = pair_creator(Cont1, argv + 1, argc - 1);
-	result_cleaner(result);
+	std::clock_t startV = std::clock();
+	
+	std::vector<PairNumbers> ContV;
+	std::vector<int> resultV;
+	resultV = pair_creator<std::vector<PairNumbers>, std::vector<int> >(ContV, argv + 1, argc - 1);
+	
+	std::clock_t endV = std::clock();
+	double timeV = static_cast<double>(endV - startV) * 1000000.0 / CLOCKS_PER_SEC;
 
+	
+	std::clock_t startD = std::clock();
+
+	std::deque<PairNumbers> ContD;
+	std::deque<int> resultD;
+	resultD = pair_creator<std::deque<PairNumbers>, std::deque<int> >(ContD, argv + 1, argc - 1);
+
+	std::clock_t endD = std::clock();
+	double timeD = static_cast<double>(endD - startD) * 1000000.0 / CLOCKS_PER_SEC;
+	
+
+	std::cout << std::fixed << std::setprecision(2);
+	std::cout << "Before: ";
+	argument_printer(argv, argc);
+
+	std::cout << "After: ";
+	result_printer(resultV);
+
+	std::cout << "Time to process a range of " << argc - 1 << " elements with std::vector: " << timeV << " us" << std::endl;
+	std::cout << "Time to process a range of " << argc - 1 << " elements with std::deque: " << timeD << " us" << std::endl;
 
 	return (0);
 }
-
-
-
-// void	binary_serach(int target, std::vector<int>numbers)
-// {
-// 	size_t	first = 0;
-// 	size_t	second = numbers.size();
-
-// 	while (first < second)
-// 	{
-// 		int pos = numbers.size() / 2;
-
-// 		if (pos < target)
-// 		{
-// 			first = pos;
-// 			second = numbers.end(); 
-// 		}
-// 		else if (pos > target)
-// 		{
-// 			first = pos;
-// 			second = numbers.end(); 			
-// 		}
-// 		else
-
-// 	}
-// }
