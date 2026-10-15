@@ -6,7 +6,7 @@
 /*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:35 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/15 11:21:18 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/15 16:40:49 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@
 /*For setprecission*/
 #include <iomanip>
 
+/*For the pair container*/
+#include <utility>
+
 struct PairNumbers
 {
 	int	BigNumber;
@@ -51,54 +54,71 @@ struct PairNumbers
 
 int	MyAtoi(std::string str);
 std::vector<int>	jacky_secuency(int	argc);
-std::vector<int> jacky_resolution(std::vector<int> littleOnes, std::vector<int> jacky);
+std::vector<std::pair<int, int> > jacky_resolution(std::vector<std::pair<int, int> > littleOnes, std::vector<int> jacky);
 void	free_char(char **result);
 
-template <typename E>
-void	result_printer(E &base)
+inline void print_element(const std::pair<int, int>& value)
 {
-	E result;
-	for (size_t i = 0; i < base.size(); i++)
-	{
-		if (base[i] < 1)
-			continue;
-		result.push_back(base[i]);
-	}
-	for (size_t i = 0; i < result.size(); ++i)
-    	std::cout << result[i] << ' ';
-	std::cout << "\n";
+	std::cout << value.first << " ";
+}
+
+template <typename E>
+void result_printer(const E& base)
+{
+	for (size_t i = 0; i < base.size(); ++i)
+		print_element(base[i]);
+
+	std::cout << '\n';
 }
 
 template <typename Q>
 int FindSmallNumberById(const Q& Numbers, int id)
 {
-    for (size_t i = 0; i < Numbers.size(); i++)
-    {
-        if (Numbers[i].IdNumber == id)
-            return Numbers[i].SmallNumber;
-    }
+	for (size_t i = 0; i < Numbers.size(); i++)
+	{
+		if (Numbers[i].IdNumber == id)
+			return Numbers[i].SmallNumber;
+	}
 
-    return -1;
+	return -1;
 }
 
-
-template <typename Q>
-void binary_insertion(int target, Q& numbers)
+template <typename Q, typename S>
+void binary_insertion(Q& result, const S& SmallOnesOrg)
 {
-    size_t first = 0;
-    size_t second = numbers.size();
+	for (size_t i = 0; i < SmallOnesOrg.size(); ++i)
+	{
+		int small = SmallOnesOrg[i].first;
+		int id = SmallOnesOrg[i].second;
 
-    while (first < second)
-    {
-        size_t pos = first + (second - first) / 2;
+		size_t first = 0;
+		size_t last = result.size();
 
-        if (numbers[pos] < target)
-            first = pos + 1;
-        else
-            second = pos;
-    }
+		if (id != -1)
+		{
+			size_t bigPos = 0;
 
-    numbers.insert(numbers.begin() + first, target);
+			while (bigPos < result.size() && result[bigPos].second != id)
+				++bigPos;
+
+			if (bigPos == result.size())
+				continue;
+
+			last = bigPos;
+		}
+
+		while (first < last)
+		{
+			size_t mid = first + (last - first) / 2;
+
+			if (result[mid].first < small)
+				first = mid + 1;
+			else
+				last = mid;
+		}
+
+		result.insert(result.begin() + first, std::make_pair(small, id));
+	}
 }
 
 template <typename Q>
@@ -109,7 +129,7 @@ char	**int_to_char(const Q &values)
 	for (size_t i = 0; i < values.size(); ++i)
 	{
 		std::ostringstream stream;
-		stream << values[i];
+		stream << values[i].first;
 
 		std::string str = stream.str();
 
@@ -122,74 +142,77 @@ char	**int_to_char(const Q &values)
 }
 
 template <typename T, typename U>
-
-T &chair_function(T &Container, U &BigOnes)
+T& chair_function(T& Container, U& BigOnes)
 {
+	T orderedContainer;
 	std::vector<bool> used(Container.size(), false);
 
-	for (size_t i = 0; i < BigOnes.size(); i++)
-	{
+	for (size_t i = 0; i < BigOnes.size(); ++i)
+	{	
 		int bestIndex = -1;
 
-		for (size_t j = 0; j < Container.size(); j++)
+		for (size_t j = 0; j < Container.size(); ++j)
 		{
 			if (used[j])
 				continue;
 
-			if (Container[j].BigNumber != BigOnes[i])
+			if (Container[j].BigNumber != BigOnes[i].first)
 				continue;
 
-			if (bestIndex == -1 || Container[j].SmallNumber	< Container[bestIndex].SmallNumber)
-				bestIndex = j;
+			bestIndex = static_cast<int>(j);
+			break;
 		}
 
 		if (bestIndex != -1)
 		{
-			Container[bestIndex].IdNumber = i;
+			PairNumbers pair = Container[bestIndex];
+			
+			pair.IdNumber = static_cast<int>(i);
+
+			orderedContainer.push_back(pair);
 			used[bestIndex] = true;
 		}
 	}
 
+	Container = orderedContainer;
 	return Container;
 }
 
 template <typename Container, typename PairContainer>
 PairContainer makePairs(const Container& container, bool useBigNumber)
 {
-    PairContainer result;
+	PairContainer result;
 
-    typename Container::const_iterator it;
+	typename Container::const_iterator it;
 
-    for (it = container.begin(); it != container.end(); ++it)
-    {
-        int number;
+	for (it = container.begin(); it != container.end(); ++it)
+	{
+		int number;
 
-        if (useBigNumber)
-            number = it->BigNumber;
-        else
-            number = it->SmallNumber;
+		if (useBigNumber)
+			number = it->BigNumber;
+		else
+			number = it->SmallNumber;
 
-        result.push_back(std::make_pair(number, it->IdNumber));
-    }
+		result.push_back(std::make_pair(number, it->IdNumber));
+	}
 
-    return result;
+	return result;
 }
 
 template <typename T, typename U>
 U	pair_creator(T &Container, char **numbers, int argc)
 {
 	U result;
-	if (argc == 1)
-	{
-		int only = MyAtoi(numbers[0]);
-		result.push_back(only);
-		return (result);
-	}
-
 	U BigOnes;
 	U SmallOnes;
 	
-	int	leftover = 0;
+	bool hasLeftover = (argc % 2 != 0);
+	int leftover = 0;
+
+	if (hasLeftover)
+		leftover = MyAtoi(numbers[argc - 1]);
+
 	
 	for (int i = 0, j = 0; i < argc; i += 2, ++j)
 	{
@@ -201,18 +224,14 @@ U	pair_creator(T &Container, char **numbers, int argc)
 			if (first1 >= second1)
 			{
 				Container.push_back(PairNumbers(first1, second1, j));
-				// BigOnes.push_back(std::make_pair(first1, j));
-				// SmallOnes.push_back(std::make_pair(second1, j));
+				BigOnes.push_back(std::make_pair(first1, j));
 			}
 			else
 			{
 				Container.push_back(PairNumbers(second1, first1, j));
-				// BigOnes.push_back(std::make_pair(second1, j));
-				// SmallOnes.push_back(std::make_pair(first1, j));
+				BigOnes.push_back(std::make_pair(second1, j));
 			}
 		}
-		else
-			leftover = MyAtoi(numbers[i]);
 	}
 
 	if (BigOnes.size() > 1)
@@ -224,41 +243,26 @@ U	pair_creator(T &Container, char **numbers, int argc)
 
 		free_char(Big);
 	}
-	
-	result = BigOnes;
+
 	Container = chair_function(Container, BigOnes);
 	
-	BigOnes = makePairs(Container, true);
-	SmallOnes = makePairs(Container, false);
+	BigOnes = makePairs<T, U>(Container, true);
+	SmallOnes = makePairs<T, U>(Container, false);
 	
-	int smaller = FindSmallNumberById(Container, 0);
-	result.insert(result.begin(), smaller);
+	result = BigOnes;
+	
 
-	for (size_t i = 0; i < SmallOnes.size(); i++)
-	{
-    	if (SmallOnes[i] == smaller)
-    	{
-        	SmallOnes.erase(SmallOnes.begin() + i);
-        	break;
-    	}
-	}
-
-	if (result.size() <= 2)
-	{
-		if (leftover != 0)
-			binary_insertion(leftover, result);
-		return (result);
-	}
-
-	std::vector<int> JackyNumbers = jacky_secuency(argc);
 	std::vector<std::pair<int, int> > SmallOnesVector(SmallOnes.begin(), SmallOnes.end());
-	std::vector<std::pair<int, int> > SmallOnesOrg = jacky_resolution(SmallOnesVector, JackyNumbers);
-	
-	for(size_t i = 0; i < SmallOnesOrg.size(); i++)
-		binary_insertion(SmallOnesOrg[i], result);
 
-	if (leftover != 0)
-		binary_insertion(leftover, result);
+	if (hasLeftover)
+		SmallOnesVector.push_back(std::make_pair(leftover, -1));
+
+	std::vector<int> JackyNumbers = jacky_secuency(static_cast<int>(SmallOnesVector.size()));
+
+	std::vector<std::pair<int, int> > SmallOnesOrg = jacky_resolution(SmallOnesVector, JackyNumbers);
+
+		
+	binary_insertion(result, SmallOnesOrg);
 
 	return (result);
 }
