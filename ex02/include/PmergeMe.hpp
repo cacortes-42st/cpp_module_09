@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:35 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/14 21:35:36 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/15 11:21:18 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,6 +153,28 @@ T &chair_function(T &Container, U &BigOnes)
 	return Container;
 }
 
+template <typename Container, typename PairContainer>
+PairContainer makePairs(const Container& container, bool useBigNumber)
+{
+    PairContainer result;
+
+    typename Container::const_iterator it;
+
+    for (it = container.begin(); it != container.end(); ++it)
+    {
+        int number;
+
+        if (useBigNumber)
+            number = it->BigNumber;
+        else
+            number = it->SmallNumber;
+
+        result.push_back(std::make_pair(number, it->IdNumber));
+    }
+
+    return result;
+}
+
 template <typename T, typename U>
 U	pair_creator(T &Container, char **numbers, int argc)
 {
@@ -173,20 +195,20 @@ U	pair_creator(T &Container, char **numbers, int argc)
 	{
 		if (i + 1 < argc)
 		{
-			int first = MyAtoi(numbers[i]);
-			int second = MyAtoi(numbers[i + 1]);
+			int first1 = MyAtoi(numbers[i]);
+			int second1 = MyAtoi(numbers[i + 1]);
 
-			if (first >= second)
+			if (first1 >= second1)
 			{
-				Container.push_back(PairNumbers(first, second, j));
-				BigOnes.push_back(first);
-				SmallOnes.push_back(second);
+				Container.push_back(PairNumbers(first1, second1, j));
+				// BigOnes.push_back(std::make_pair(first1, j));
+				// SmallOnes.push_back(std::make_pair(second1, j));
 			}
 			else
 			{
-				Container.push_back(PairNumbers(second, first, j));
-				BigOnes.push_back(second);
-				SmallOnes.push_back(first);
+				Container.push_back(PairNumbers(second1, first1, j));
+				// BigOnes.push_back(std::make_pair(second1, j));
+				// SmallOnes.push_back(std::make_pair(first1, j));
 			}
 		}
 		else
@@ -205,6 +227,9 @@ U	pair_creator(T &Container, char **numbers, int argc)
 	
 	result = BigOnes;
 	Container = chair_function(Container, BigOnes);
+	
+	BigOnes = makePairs(Container, true);
+	SmallOnes = makePairs(Container, false);
 	
 	int smaller = FindSmallNumberById(Container, 0);
 	result.insert(result.begin(), smaller);
@@ -226,8 +251,8 @@ U	pair_creator(T &Container, char **numbers, int argc)
 	}
 
 	std::vector<int> JackyNumbers = jacky_secuency(argc);
-	std::vector<int> SmallOnesVector(SmallOnes.begin(), SmallOnes.end());
-	std::vector<int> SmallOnesOrg = jacky_resolution(SmallOnesVector, JackyNumbers);
+	std::vector<std::pair<int, int> > SmallOnesVector(SmallOnes.begin(), SmallOnes.end());
+	std::vector<std::pair<int, int> > SmallOnesOrg = jacky_resolution(SmallOnesVector, JackyNumbers);
 	
 	for(size_t i = 0; i < SmallOnesOrg.size(); i++)
 		binary_insertion(SmallOnesOrg[i], result);
