@@ -6,7 +6,7 @@
 /*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 09:49:55 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/15 17:15:24 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/20 17:34:58 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,15 +281,26 @@ void line_extractor(int fd, std::map<std::string, float> databaseS)
 		{
 			if (buffer[i] == '\n')
 			{
-				if (first_line)
+				try
 				{
-					if (!check_header(line))
-						throw BadHeaderExcepction();
-
-					first_line = false;
-					line.clear();
-					continue;
+					if (first_line)
+					{
+						if (!check_header(line))
+						{
+							first_line = false;
+							throw BadHeaderExcepction();
+							continue;
+						}
+						first_line = false;
+						line.clear();
+						continue;
+					}
 				}
+				catch (std::exception & e)
+				{
+					std::cerr << "Error: " << e.what() << std::endl;
+				}
+				
 				std::string date;
 				char separator = '\0';
 				std::string value;
@@ -324,8 +335,8 @@ void line_extractor(int fd, std::map<std::string, float> databaseS)
 std::map<std::string, float> file_extractor(std::ifstream& file)
 {
 	std::map<std::string, float> database;
-	
 	std::string	line;
+	
 	std::getline(file, line);
 
 	while (getline(file, line))
