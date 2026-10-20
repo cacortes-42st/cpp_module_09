@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 10:50:01 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/08 22:25:41 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/15 17:25:02 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ std::stack<int>	stack_resolver(std::stack<int> stack, char opr, solution_box &Bo
 	int	result = 0;
 
 	if (stack.size() < 2)
-    throw std::invalid_argument("");
+	throw std::invalid_argument("");
 
 	int opn2 = stack.top();
 	stack.pop();

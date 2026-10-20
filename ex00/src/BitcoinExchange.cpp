@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BitcoinExchange.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 09:50:31 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/04 23:01:46 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/15 17:07:24 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 
 const char* BadFileExcepction::what() const throw()
 {
-    return "could not open file.";
+	return "could not open file.";
 }
 
 const char* NegativeNumberExcepction::what() const throw()
 {
-    return "not a positive number.";
+	return "not a positive number.";
 }
 
 const char* OutOfRangeUpExcepction::what() const throw()
 {
-    return "too large a number.";
+	return "too large a number.";
 }
 
 
@@ -42,16 +42,16 @@ BadFormatException::~BadFormatException() throw()
 
 const char* BadFormatException::what() const throw()
 {
-    return message.c_str();
+	return message.c_str();
 }
 
 
 const char* BadHeaderExcepction::what() const throw()
 {
-    return "The header input file is incorrect.";
+	return "The header input file is incorrect.";
 }
 
 const char* NoPreviousNumberExcepction::what() const throw()
 {
-    return "No previous date exists.";
+	return "No previous date exists.";
 }

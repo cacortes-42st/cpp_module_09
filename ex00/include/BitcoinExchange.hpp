@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 0002lse60False9/20 F0alse:5False:18 by cacortes          #+#    #+#             */
-/*   Updated: 20alse26/0F0lse/False2:30 01:48 by cacortes         ###   ########.fr       */
+/*   Created: 2026/09/25 09:50:31 by cacortes          #+#    #+#             */
+/*   Updated: 2026/10/15 17:09:15 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
