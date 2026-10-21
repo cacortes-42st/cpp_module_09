@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 09:49:55 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/20 17:34:58 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/21 18:45:35 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,6 +268,24 @@ int	check_header(std::string line)
 	return (0);
 }
 
+void	process_line(std::string line, std::map<std::string, float> databaseS)
+{
+	std::string date;
+	char separator = '\0';
+	std::string value;
+	std::string trash;
+				
+	std::istringstream iss(line);
+	iss >> date >> separator >> value >> trash;
+
+	if (!trash.empty() || !separator || value.empty() || date.empty())
+		throw BadFormatException(date, separator, value, trash);
+					
+	if (parse_line(date, separator, value))
+		throw BadFormatException(date, separator, value, trash);
+	solution_printer(date, value, databaseS);
+}
+
 void line_extractor(int fd, std::map<std::string, float> databaseS)
 {
 	char buffer[1024];
@@ -285,38 +303,24 @@ void line_extractor(int fd, std::map<std::string, float> databaseS)
 				{
 					if (first_line)
 					{
+						first_line = false;
 						if (!check_header(line))
 						{
-							first_line = false;
-							throw BadHeaderExcepction();
-							continue;
+							std::cerr << "Error: " << BadHeaderExcepction().what() << std::endl;
+							try
+							{
+								process_line(line, databaseS);
+							}
+							catch (std::exception &e)
+							{
+								std::cerr << "Error: " << e.what() << std::endl;
+							}
 						}
-						first_line = false;
 						line.clear();
 						continue;
 					}
-				}
-				catch (std::exception & e)
-				{
-					std::cerr << "Error: " << e.what() << std::endl;
-				}
-				
-				std::string date;
-				char separator = '\0';
-				std::string value;
-				std::string trash;
-				
-				std::istringstream iss(line);
-				iss >> date >> separator >> value >> trash;
-				
-				try
-				{
-					if (!trash.empty() || !separator || value.empty() || date.empty())
-						throw BadFormatException(date, separator, value, trash);
-					
-					if (parse_line(date, separator, value))
-						throw BadFormatException(date, separator, value, trash);
-					solution_printer(date, value, databaseS);
+
+					process_line(line, databaseS);
 				}
 				catch (std::exception & e)
 				{
@@ -327,6 +331,19 @@ void line_extractor(int fd, std::map<std::string, float> databaseS)
 			else
 				line += buffer[i];
 		}
+	}
+
+	if (!line.empty())
+	{
+		try
+		{
+			process_line(line, databaseS);
+		}
+		catch (std::exception &e)
+		{
+			std::cerr << "Error: " << e.what() << std::endl;
+		}
+		line.clear();
 	}
 
 }

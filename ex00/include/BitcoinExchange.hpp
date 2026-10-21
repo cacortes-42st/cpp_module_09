@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BitcoinExchange.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 09:50:31 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/15 17:09:15 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/21 18:44:34 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ class	BadFormatException : public std::exception
 
 class   BadHeaderExcepction : public std::exception
 {
-	const char *what() const throw();
+	public:
+		const char *what() const throw();
 };
 
 class   NoPreviousNumberExcepction : public std::exception
