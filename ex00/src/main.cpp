@@ -6,7 +6,7 @@
 /*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 09:49:55 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/21 18:45:35 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/23 18:15:52 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,13 +155,13 @@ int	isEsInt(std::string lit)
 			if (lit[i + 1] == 'f')
 				return (1);
 		}
-		if ((!std::isdigit(lit[i]) && lit[i] != '.') || p > 1)
+		if ((!std::isdigit(lit[i]) && lit[i] != '.' && lit[i] != 'f') || p > 1)
 			return (1);
 		i++;
 	}
 	if (p != 1)
 		return (1);
-
+	
 	float result = std::strtof(lit.c_str(), NULL);
 	if (result < 0 || result > 1000)
 	{
@@ -235,30 +235,29 @@ void	solution_printer(const std::string& date, std::string& value, std::map<std:
 	std::map<std::string, float>::iterator itS;
 	float amount = std::strtof(value.c_str(), NULL);
 
-		itS = databaseS.find(date);
+	itS = databaseS.find(date);
 
-		if (itS != databaseS.end())
-		{
-			float result = amount * itS->second;;
-			std::cout << date << " => " << amount << " = " << result << std::endl;
-		}
-		else
-		{
-			itS = databaseS.lower_bound(date);
+	if (itS != databaseS.end())
+	{
+		float result = amount * itS->second;
+		std::cout << date << " => " << amount << " = " << result << std::endl;
+	}
+	else
+	{
+		itS = databaseS.lower_bound(date);
 
-			if (itS == databaseS.end())
+		if (itS == databaseS.end())
+			--itS;
+		/*else if (itS->first != date)
+		{*/
+			if(itS == databaseS.begin())
+				throw NoPreviousNumberExcepction();
+			else
 				--itS;
-			else if (itS->first != date)
-			{
-				if(itS == databaseS.begin())
-					throw NoPreviousNumberExcepction();
-				else
-					--itS;
-			}
-			float result = amount * itS->second;
-			std::cout << date << " => " << amount << " = " << result << std::endl;
-
-		}
+		//}
+		float result = amount * itS->second;
+		std::cout << date << " => " << amount << " = " << result << std::endl;
+	}
 }
 
 int	check_header(std::string line)
