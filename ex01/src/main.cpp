@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 10:50:01 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/15 17:25:02 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/24 17:45:47 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int	line_parser(std::string expr)
 {
+	if (expr[0] == ' ')
+		return (1);
 	for (size_t i = 0 ; i < expr.size() ; i++)
 	{
 		if (!std::isdigit(expr[i]) && expr[i] != '+' && expr[i] != '-' && expr[i] != '/' && expr[i] != '*' && expr[i] != ' ')

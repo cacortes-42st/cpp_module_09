@@ -6,7 +6,7 @@
 /*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/25 09:49:55 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/23 18:15:52 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/24 17:19:21 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,10 @@ int	check_date(int month, int day)
 			if (day != 30)
 				return (1);
 		}
-		else
-		{
-			if (day != 31)
-				return (1);
-		}
 	}
 	else
 	{
-		if (month >= 8)
-		{
-			if (day != 31)
-				return (1);
-		}
-		else
+		if (month < 8)
 		{
 			if (day != 30)
 				return (1);
@@ -248,13 +238,13 @@ void	solution_printer(const std::string& date, std::string& value, std::map<std:
 
 		if (itS == databaseS.end())
 			--itS;
-		/*else if (itS->first != date)
-		{*/
+		else if (itS->first != date)
+		{
 			if(itS == databaseS.begin())
 				throw NoPreviousNumberExcepction();
 			else
 				--itS;
-		//}
+		}
 		float result = amount * itS->second;
 		std::cout << date << " => " << amount << " = " << result << std::endl;
 	}
@@ -279,9 +269,10 @@ void	process_line(std::string line, std::map<std::string, float> databaseS)
 
 	if (!trash.empty() || !separator || value.empty() || date.empty())
 		throw BadFormatException(date, separator, value, trash);
-					
+	
 	if (parse_line(date, separator, value))
 		throw BadFormatException(date, separator, value, trash);
+
 	solution_printer(date, value, databaseS);
 }
 

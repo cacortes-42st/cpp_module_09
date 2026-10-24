@@ -33,68 +33,44 @@
     * Calculates the value of the given amount by multiplying it by the corresponding Bitcoin exchange rate.
 		-  The calculation is done in the same function that prints the solution (`solution_printer`), right before showing it in the output and with the correct format, all the necessary values are recovered and used to form the result. The function searchs for the especific date in the container that has all the data of the CSV file. If it founds it, it does the calculation with the value in the map container that has the same key as the date
     * Uses the closest lower date from the database when the exact date is not available.
-		- If inside `solution_printer`, the date isn't found. The function use `lower_bound` to find int the map container, the first key that is higer or equal than date. But that's not good enough for us, the subject said we need the "closest lower date", so thats why when `lower_bound` finds the date, we go back in the CSV container and choose the date before as our key. If that key is the first one in the list, the program displays an error, if is the last one it goes back on the list, choosing the previous date, and since the databaseS is sorted by key, we will obtain the closest lower date.
+		- If inside `solution_printer`, the date isn't found. The function use `lower_bound` to find int the map container, the first key that is higer or equal than date. But that's not good enough for us, the subject said we need the "closest lower date", so thats why when `lower_bound` finds the date, we go back in the CSV container and choose the date before as our key. If that key is the first one in the list or there isn't any previous date, the program displays an error, if is the last one it goes back on the list, choosing the previous date, and since the databaseS is sorted by key, we will obtain the closest lower date.
 * Use at least one STL container to store and process the data.
-	* In this project `map` is used. As it is a containter that can store two different types of data with the same key. Here the key is date and it is used to find the bitcoin value of that day. Perfect for doing our calculations and find the right value depending on the date.
+	* In this project `map` is used. As it is a containter that can store data and its unique key. Here the key is date and it is used to find the bitcoin value of that day. Perfect for doing our calculations and find the right value depending on the date.
 * Handle possible errors with appropriate error messages, including invalid dates, negative values, values exceeding the allowed limit and malformed input.
+	- The errors are handled with exceptions classes, and the messages are implemented in the .cpp file.
 
-### 
-In the subject it didn`t specified how the input file should be, it just gives an 
+
 ### What can we learn about this exercise?
 
 This exercise introduces **file parsing, data validation and associative containers** through a program that processes historical Bitcoin exchange rates. It also teaches us how to search for the closest available date in an ordered database and handle invalid input safely.
 
 ### Output example:
 
-```text
-$> ./btc input.txt
-2011-01-03 => 3 = 0.9
-2011-01-03 => 2 = 0.6
-2011-01-03 => 1 = 0.3
-2011-01-03 => 1.2 = 0.36
-2011-01-09 => 1 = 0.32
-Error: not a positive number.
-Error: bad input => 2001-42-42
-2012-01-11 => 1 = 7.1
-Error: too large a number.
-```
-
 ![Example](images/ex00-output.png)
 
 
 ## ex01: Reverse Polish Notation
 
-### Mandatory requirements completed:
+### Mandatory requirements completed and how:
 
 * Create a program named `RPN` that:
     * Takes an inverted Polish mathematical expression as an argument.
+	- The program checks if there are only the necessary number of arguments in the input, if not an error message is displayed and the program ends.
+	* Handle invalid expressions displaying an error message on the standard error if an error occurs during execution.
+	- When the program has enough numbers to work, `line_parser` ensures that the mayority of the strucutre of the mathematical expression is correct. Serarching for characters that aren't integers, spaces or the required mathematical expressions. Other important structre part that it checks are the spaces, this program doesn't allow spaces at the beginning or at the end of the expression, also any permitted character must have an space after (not including the ending). This is done by checking the character following the one currently being iterated over (taking into account the spaces), and being careful whith the acces to empty data. 
     * Evaluates the expression and displays the correct result on the standard output.
+	- The other function that checks the expression before any mathematical calculation is done is `expression_parser`, this function in particular count the numbers and the symbols of the expression, because for the expression to be considered correctly expressed in Reverse Polish Notation, there must be two operands available for every operator. 
+	- [Once we are sure that he expression is valid, the program starts storing its parts, the first thing that does is chekcing out that the first two permited characters are numbers, (activating a flag so this check is only done one time), and stores the result until it founds an operator, if they aren't it displays an error. When the program has all the elements to perform a calculation, it calls `stack_resolver` to solve it, storing the result in a temporary stack container that is again called as the first operand when the function has again enough elements. This way, to solve all the expression, the program solves a part and recursively use it to solve the next part of the epression, having as final result the correct output of the expression.]
     * Supports the following operators: `+`, `-`, `/` and `*`.
-    * Handles single-digit numbers smaller than `10` in the input. The calculation and the resulting value are not restricted by this rule.
-    * Displays an error message on the standard error if an error occurs during execution.
+	- Delving into `stack_resolver`, the function takes the first and second operands stored in stack (before deleting them to free stack for the next part of the expression), change them to normal ints, and depending on the operator that is passed from `expression_processor`, performing the relevant mathematical operations. The result is stored in the structre `final_result`, and printed when the loop in `expression_processor` is over.
 * Use at least one STL container to evaluate the expression.
-* Handle invalid expressions and ensure that mathematical operations are performed correctly.
-* Do not handle parentheses or decimal numbers.
+- The container `std::stack` is used here because of its FIFO logic (Fist In First Out), that is useful to store the numbers, but also for the `stack_resolver` part to collect the necessary operands to solve the expression.
 
 ### What can we learn about this exercise?
 
 This exercise introduces **Reverse Polish Notation (RPN)**, a mathematical notation in which operators follow their operands. It teaches us how to evaluate expressions using an STL container, process tokens and perform arithmetic operations in the correct order without requiring parentheses or operator precedence rules.
 
 ### Output example:
-
-```text
-$> ./RPN "8 9 * 9 - 9 - 9 - 4 - 1 +"
-42
-
-$> ./RPN "7 7 * 7 -"
-42
-
-$> ./RPN "1 2 * 2 / 2 * 2 4 - +"
-0
-
-$> ./RPN "(1 + 1)"
-Error
-```
 
 ![Example](images/ex01-output.png)
 
