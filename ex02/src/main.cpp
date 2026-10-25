@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:05 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/15 16:37:36 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/25 20:40:37 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,34 +42,34 @@ int	ArgumentPrinter(char **numbers, int argc)
 	return (0);
 }
 
-std::vector<std::pair<int, int> > jacky_resolution(std::vector<std::pair<int, int> > littleOnes, std::vector<int> jacky)
-{
-	std::vector<std::pair<int, int> > result;
+// std::vector<std::pair<int, int> > jacky_resolution(std::vector<std::pair<int, int> > littleOnes, std::vector<int> jacky)
+// {
+// 	std::vector<std::pair<int, int> > result;
 
-	size_t previous = 0;
-	size_t size = littleOnes.size();
+// 	size_t previous = 0;
+// 	size_t size = littleOnes.size();
 
-	for (size_t i = 0; i < jacky.size(); ++i)
-	{
-		size_t current = static_cast<size_t>(jacky[i]);
+// 	for (size_t i = 0; i < jacky.size(); ++i)
+// 	{
+// 		size_t current = static_cast<size_t>(jacky[i]);
 
-		if (current > size)
-			current = size;
+// 		if (current > size)
+// 			current = size;
 
-		while (current > previous)
-		{
-			result.push_back(littleOnes[current - 1]);
-			--current;
-		}
+// 		while (current > previous)
+// 		{
+// 			result.push_back(littleOnes[current - 1]);
+// 			--current;
+// 		}
 
-		previous = static_cast<size_t>(jacky[i]);
+// 		previous = static_cast<size_t>(jacky[i]);
 
-		if (previous >= size)
-			break;
-	}
+// 		if (previous >= size)
+// 			break;
+// 	}
 
-	return result;
-}
+// 	return result;
+// }
 
 std::vector<int> jacky_secuency(int count)
 {
@@ -132,7 +132,7 @@ int	main(int argc, char **argv)
 	
 	std::vector<PairNumbers> ContV;
 	std::vector<std::pair<int, int> > resultV;
-	resultV = pair_creator<std::vector<PairNumbers>, std::vector<std::pair<int, int> > >(ContV, argv + 1, argc - 1);
+	resultV = main_creator<std::vector<PairNumbers>, std::vector<std::pair<int, int> > >(ContV, argv + 1, argc - 1);
 	
 	std::clock_t endV = std::clock();
 	double timeV = static_cast<double>(endV - startV) * 1000000.0 / CLOCKS_PER_SEC;
@@ -142,7 +142,7 @@ int	main(int argc, char **argv)
 
 	std::deque<PairNumbers> ContD;
 	std::deque<std::pair<int, int> > resultD;
-	resultD = pair_creator<std::deque<PairNumbers>, std::deque<std::pair<int, int> > >(ContD, argv + 1, argc - 1);
+	resultD = main_creator<std::deque<PairNumbers>, std::deque<std::pair<int, int> > >(ContD, argv + 1, argc - 1);
 
 	std::clock_t endD = std::clock();
 	double timeD = static_cast<double>(endD - startD) * 1000000.0 / CLOCKS_PER_SEC;

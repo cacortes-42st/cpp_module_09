@@ -81,16 +81,23 @@ This exercise introduces **Reverse Polish Notation (RPN)**, a mathematical notat
 
 * Create a program named `PmergeMe` that:
     * Takes a sequence of positive integers as arguments.
+	- This program needs at least two arguments to work, so first it chekcs the number of the arguments to make sure that there aren't only one.
+	- To check that the numbers are valid, `ArgumentParsing` checks each one making sure that there aren't below zero or more than the maximum integer limit.
+    * Uses at least two different STL containers to validate this exercise.
+	- In this exercise are used three containers: `std::vector`, `std::deque` and `std::pair`.
     * Sorts the sequence using the **merge-insertion sort algorithm**, also known as the **Ford-Johnson algorithm**.
-    * Uses at least two different STL containers to perform the sorting.
-    * Handles sequences containing at least `3000` different integers.
+	- The **Ford-Johnson algorithm**, is a sorting algorithm that aims to order a sequence using the minimum number of comparisons between elements—unlike functions such as `sort`, where this is not a priority. This is achieved, in part, because the algorithm leverages information from previous comparisons to avoid unnecessary ones.
+	- To archieve the efficiency of the **Ford-Johnson algorithm**, each one of their tasks are defined and implemented in this way:
+		- Making pairs: A contanier (`std::vector` or `std::deque`), is created and prepared to store `PairNumbers` objects (a structure made so that each object can store a big number, a small number and an unique id that identifies the pair). When the `main_creator` function is called (a function template to work with `std::vector` and `std::deque`), its saves the extra number if the number of arguments is odd. Then it change them to integers, analise the numbers and forms pairs in order of arrival, for each pair an `PairNumbers` object with an unique id is created, in each object there would be a big and a small number.
+		- Sorting the bigger ones: For each pair made, the recently classified big numbers will be stored in a separate container, and before making any comparisons, the `main_creator` function will be called recursively to sort this big numbers with the **Ford-Johnson algorithm**, allways if there are enough big numbers to sort.
+		- Creating the "main chain": Once we have our big numbers ordered, `chair_function` will take the container with all the pairs and this big numbers sorted as reference. Becaus insided this function, all the ids in the container will change and have the same order spcified by big nubmers order, (controlling repeated numbers with a used flag).
+		- With these new order, two new groups will be created storing all the bigger ones and all the smaller ones chair_function respectively, but they will be stored in a container that holds pairs (an `std::vector` that holds `std::pair` objects), it must be pairs, because each small or big number will have also the id of their specific pair. In this way, the relationship between pairs it stays together even if the members are in separated containers, because the still have the id of their pairs.
+		- Now that everything is in its place, we start creating the "main chain". For that we have to collect all our big numbers and place them in the `main_chain` variable. After that it searchs in the `SmallOnes` container for the smallest number of the first pair (the one with the id zero), and place it at the beginning of the `main_chain`. This reduce the number of comparisons as we surely know that this number is smaller than all the big ones ordered.
+		- Finally is time to insert our smaller numbers in the `main_chain`. But first, to reduce the number of comparisongs, `jacky_resolution` has to sort the small numbers, and it does this using the Jacobsthal sequence previously generated in `jacky_secuency`. In practice, we insert the pending elements in "groups" based on their position in the secuency, processing each group backwards between consecutive Jacobsthal numbers. For example, if the Jacobstahl secuency generated is 1 2 3 5 we insert backwards the elements at index 5 - 3, at index 3 - 2, then index 2 - 1, and then index 1. The number of elements generated in the secuency are equal than the size of `SmallOnes`.
+		- Once our small numbers are sorted, we insert them in the `main_chain` through binary insertion. That means that before inserting the number, the function searchs for the middle number of the chain, when it founds it, it checks if the number is higher or lower than the number in the middle, depending of the result it iterates until if founds the correct position of the number. However, in the **Ford-Johnson algorithm** we want the least number of comparsiongs, and to archieve this, `binary_insertion` searchs the middle number between the start of the chain and the Big number, what big number?, the partner of the small number we want to insert in the chain. Searching by the id, the function founds it and do the search within does limits, reducing the number of comparisons even more.
     * Displays an error message on the standard error if an error occurs during execution.
-* Display the unsorted sequence on the first line.
-* Display the sorted sequence on the second line.
-* Display the execution time for the first container on the third line.
-* Display the execution time for the second container on the last line.
-* Measure the time required for the complete operation, including sorting and data management.
-* Use an appropriate time precision to make the performance difference between the two containers visible.
+* Display the unsorted sequence, the sorted sequence, the execution time for the first and the second container on the last line. Measure the time required for the complete operation, including sorting and data management.
+- The display of the time is done with the `std::clock` function. For each cointainer, `std::clock` registers the time when `main_chain` is called and when it its done with the sorting. Finally, the difference between `endV` and `startV` is converted to a double and multiplied by one million, then divided by CLOCKS_PER_SEC to calculate the CPU time in microseconds. This allows us to measure how much CPU time the function takes to execute.
 
 ### What can we learn about this exercise?
 
@@ -98,16 +105,6 @@ This exercise introduces **advanced sorting algorithms, container comparison and
 
 ### Output example:
 
-```text
-$> ./PmergeMe 3 5 9 7 4
-Before: 3 5 9 7 4
-After: 3 4 5 7 9
-Time to process a range of 5 elements with std::[..] : 0.00031 us
-Time to process a range of 5 elements with std::[..] : 0.00014 us
-
-$> ./PmergeMe "-1" "2"
-Error
-```
 
 ![Example](images/ex02-output.png)
 

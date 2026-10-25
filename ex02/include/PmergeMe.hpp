@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:35 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/15 16:40:49 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/25 20:42:30 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,13 @@ struct PairNumbers
 
 int	MyAtoi(std::string str);
 std::vector<int>	jacky_secuency(int	argc);
-std::vector<std::pair<int, int> > jacky_resolution(std::vector<std::pair<int, int> > littleOnes, std::vector<int> jacky);
+// std::vector<std::pair<int, int> > jacky_resolution(std::vector<std::pair<int, int> > littleOnes, std::vector<int> jacky);
 void	free_char(char **result);
 
 inline void print_element(const std::pair<int, int>& value)
 {
+	if (value.first <= 0)
+		return;
 	std::cout << value.first << " ";
 }
 
@@ -72,15 +74,15 @@ void result_printer(const E& base)
 }
 
 template <typename Q>
-int FindSmallNumberById(const Q& Numbers, int id)
+std::pair<int, int> FindSmallNumberById(const Q& Numbers, int id)
 {
 	for (size_t i = 0; i < Numbers.size(); i++)
 	{
-		if (Numbers[i].IdNumber == id)
-			return Numbers[i].SmallNumber;
+		if (Numbers[i].second == id)
+			return Numbers[i];
 	}
 
-	return -1;
+	return std::make_pair(0, -1);
 }
 
 template <typename Q, typename S>
@@ -200,10 +202,41 @@ PairContainer makePairs(const Container& container, bool useBigNumber)
 	return result;
 }
 
-template <typename T, typename U>
-U	pair_creator(T &Container, char **numbers, int argc)
+template <typename J>
+J jacky_resolution(J littleOnes, std::vector<int> jacky)
 {
-	U result;
+	J result;
+
+	size_t previous = 0;
+	size_t size = littleOnes.size();
+
+	for (size_t i = 0; i < jacky.size(); ++i)
+	{
+		size_t current = static_cast<size_t>(jacky[i]);
+
+		if (current > size)
+			current = size;
+
+		while (current > previous)
+		{
+			result.push_back(littleOnes[current - 1]);
+			--current;
+		}
+
+		previous = static_cast<size_t>(jacky[i]);
+
+		if (previous >= size)
+			break;
+	}
+
+	return result;
+}
+
+
+template <typename T, typename U>
+U	main_creator(T &Container, char **numbers, int argc)
+{
+	U main_chain;
 	U BigOnes;
 	U SmallOnes;
 	
@@ -239,7 +272,7 @@ U	pair_creator(T &Container, char **numbers, int argc)
 		T Pair;
 
 		char **Big = int_to_char(BigOnes);
-		BigOnes = pair_creator<T, U>(Pair, Big, static_cast<int>(BigOnes.size()));
+		BigOnes = main_creator<T, U>(Pair, Big, static_cast<int>(BigOnes.size()));
 
 		free_char(Big);
 	}
@@ -249,22 +282,37 @@ U	pair_creator(T &Container, char **numbers, int argc)
 	BigOnes = makePairs<T, U>(Container, true);
 	SmallOnes = makePairs<T, U>(Container, false);
 	
-	result = BigOnes;
+	std::pair<int, int> smaller = FindSmallNumberById(SmallOnes, 0);
 	
+	main_chain = BigOnes;
+	
+	main_chain.insert(main_chain.begin(), smaller);
 
-	std::vector<std::pair<int, int> > SmallOnesVector(SmallOnes.begin(), SmallOnes.end());
+	for (size_t i = 0; i < SmallOnes.size(); i++)
+	{
+    	if (SmallOnes[i].second == smaller.second)
+    	{
+        	SmallOnes.erase(SmallOnes.begin() + i);
+        	break;
+    	}
+	}
+
+	//std::vector<std::pair<int, int> > SmallOnesVector(SmallOnes.begin(), SmallOnes.end());
 
 	if (hasLeftover)
-		SmallOnesVector.push_back(std::make_pair(leftover, -1));
+		SmallOnes.push_back(std::make_pair(leftover, -1));
+		//SmallOnesVector.push_back(std::make_pair(leftover, -1));
 
-	std::vector<int> JackyNumbers = jacky_secuency(static_cast<int>(SmallOnesVector.size()));
+	//std::vector<int> JackyNumbers = jacky_secuency(static_cast<int>(SmallOnesVector.size()));
+	std::vector<int> JackyNumbers = jacky_secuency(static_cast<int>(SmallOnes.size()));
 
-	std::vector<std::pair<int, int> > SmallOnesOrg = jacky_resolution(SmallOnesVector, JackyNumbers);
+	//std::vector<std::pair<int, int> > SmallOnesOrg = jacky_resolution(SmallOnesVector, JackyNumbers);
+	U SmallOnesOrg = jacky_resolution(SmallOnes, JackyNumbers);
 
 		
-	binary_insertion(result, SmallOnesOrg);
+	binary_insertion(main_chain, SmallOnesOrg);
 
-	return (result);
+	return (main_chain);
 }
 
 #endif
