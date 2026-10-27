@@ -18,7 +18,7 @@
 		- Although, while I was working I stored the input file's contents in a container. As I developed the project, I realized that this was unnecessary: the program can process the input file line by line.
     * Processes an input file where each line follows the format `date | value`.
 		- The program reads the input file byte by byte and accumulates its contents in a string until it encounters a line break.
-		- In the subject, there isn`t any rules about how the file structure is supposed to be, it just gives you an input example that starts with a header and ends in an empty line. Thats why this program use an structure that reads, checks, stores and prints the result for each line, even if it is an error message.
+		- In the subject, there isn't any rules about how the file structure is supposed to be, it just gives you an input example that starts with a header and ends in an empty line. That's why this program use an structure that reads, checks, stores and prints the result for each line, even if it is an error message.
 		In this way, when the first line is complete, the program checks whether it matches the expected header. If it does not, an error is reported, but processing continues (this is very important).
 		- One issue with this approach is that a file without an empty line at the end is technically correct, so without additional handling, that line that doesn't end with a line break would not be processed by the main loop. To solve this, I extracted the line-processing logic into a separate function, `process_line`, which is also called after the loop to process any remaining content (if exists).
     	* Validates dates in the `Year-Month-Day` format.
@@ -29,11 +29,11 @@
     * Calculates the value of the given amount by multiplying it by the corresponding Bitcoin exchange rate.
 		-  The calculation is done in the same function that prints the solution (`solution_printer`), right before showing it in the output and with the correct format, all the necessary values are recovered and used to form the result. The function searches for the specific date in the container that saves a copy of the CSV file. If it finds it, it does the calculation with the value in the map container that has the same key as the date
     * Uses the closest lower date from the database when the exact date is not available.
-		- If inside `solution_printer`, the date isn't found. The function use `lower_bound` to find in the map container, the first key that is higher or equal than date. But that's not good enough for us, the subject said we need the "closest lower date", so thats why when `lower_bound` finds the date, It selects the preceding key, which represents the closest available earlier date. If that key is the first one in the list or there isn't any previous date, the program displays an error. If is the last one it goes back on the preceding key, choosing the previous date, and since the databaseS is sorted by key, we will obtain the closest lower date.
-* Use at least one STL container to store and process the data.
-	* This project uses `std::map` as its main associative container. Each key represents a date, and each mapped value stores the corresponding Bitcoin exchange rate. Since the keys are ordered, the container is suitable for looking up exchange rates and finding the closest earlier date.
-* Handle possible errors with appropriate error messages, including invalid dates, negative values, values exceeding the allowed limit and malformed input.
-	- The errors are handled with exceptions classes, with the corresponding error messages defined in the .cpp files.
+		- If inside `solution_printer`, the date isn't found. The function use `lower_bound` to find in the map container, the first key that is higher or equal than date. But that's not good enough for us, the subject said we need the "closest lower date", so that's why when `lower_bound` finds the date, It selects the preceding key, which represents the closest available earlier date. If that key is the first one in the list or there isn't any previous date, the program displays an error. If is the last one it goes back on the preceding key, choosing the previous date, and since the databaseS is sorted by key, we will obtain the closest lower date.
+	* Use at least one STL container to store and process the data.
+		- This project uses `std::map` as its main associative container. Each key represents a date, and each mapped value stores the corresponding Bitcoin exchange rate. Since the keys are ordered, the container is suitable for looking up exchange rates and finding the closest earlier date.
+	* Handle possible errors with appropriate error messages, including invalid dates, negative values, values exceeding the allowed limit and malformed input.
+		- The errors are handled with exceptions classes, with the corresponding error messages defined in the .cpp files.
 
 
 ### What can we learn about this exercise?
@@ -93,12 +93,13 @@ This exercise introduces **Reverse Polish Notation (RPN)**, a mathematical notat
 				- Once we have our big numbers ordered, `chair_function` reorders the pairs according to the sorted order of the big numbers container. All the ids in the main container will change and have the same order specified by big numbers, (controlling repeated numbers with a used flag).
 				- With these new order, the program creates two groups containing the bigger and smaller elements, respectively. These groups store each value together with its unique pair id in `std::pair` objects. This makes it possible to retrieve the corresponding pair later, even though the elements are stored in separate containers.
 				- Now that everything is in its place, we start creating the "main chain". It is initialized with the sorted bigger elements. The algorithm then inserts the smaller element belonging to the first pair at the beginning of the chain. Since that element is smaller than its corresponding bigger element, and the bigger elements are sorted, it is also smaller than the remaining elements in the main chain. This also reduce the number of comparisons.
+			- Binary insertion: 
 				- Finally is time to insert our smaller numbers in the `main_chain`. But first, to reduce the number of comparisons, `jacky_resolution` determines the insertion order for the smaller elements using the Jacobsthal sequence generated by `jacky_secuency`. In practice, we insert the pending elements in "groups" based on their position in the sequence, processing each group backwards between consecutive Jacobsthal numbers. For example, if the Jacobsthal sequence generated is 1 2 3 5 we insert backwards the elements at index 5 - 3, at index 3 - 2, then index 2 - 1, and then index 1. The number of elements generated in the sequence are equal than the size of `SmallOnes`.
-				- Once the insertion order has been established, the smaller elements are inserted into `main_chain` using binary search.That means that before inserting the number, the function searches for the middle number of the chain, when it founds it, it checks if the number is higher or lower than the number in the middle, depending of the result it iterates until if founds the correct position of the number. However, in the **Ford-Johnson algorithm** we want the least number of comparsiongs, and to achieve this, in `binary_insertion` the search is restricted to the portion of the chain preceding the bigger element associated with the element being inserted, in this way, the pair identifier is used to locate that bigger element and determine the search boundary. This restriction exploits the relationship between the two elements of each pair and helps reduce the number of comparisons required.
+				- Once the insertion order has been established, the smaller elements are inserted into `main_chain` using binary search.That means that before inserting the number, the function searches for the middle number of the chain, when it finds it, it checks if the number is higher or lower than the number in the middle, depending of the result it iterates until if finds the correct position of the number. However, in the **Ford-Johnson algorithm** we want the least number of comparisons, and to achieve this, in `binary_insertion` the search is restricted to the portion of the chain preceding the bigger element associated with the element being inserted, in this way, the pair identifier is used to locate that bigger element and determine the search boundary. This restriction exploits the relationship between the two elements of each pair and helps reduce the number of comparisons required.
     * Displays an error message on the standard error if an error occurs during execution.
 		- The error message is displayed when the inserted arguments fail in `ArgumentParsing`, detecting wrong inputs.
-* Display the unsorted sequence, the sorted sequence, the execution time for the first and the second container on the last line. Measure the time required for the complete operation, including sorting and data management.
-- The execution time is measured using `std::clock()`. For each container, the function registers the time when `main_chain` is called (in `startV`) and when it its done with the sorting (in `endV`). Finally, the difference between the two variables is converted to microseconds by multiplying it by one million and dividing by CLOCKS_PER_SEC. This provides an estimate of the CPU time consumed by the measured operation for each container. The reported time depends on the code included between the start and end measurements.
+	* Display the unsorted sequence, the sorted sequence, the execution time for the first and the second container on the last line. Measure the time required for the complete operation, including sorting and data management.
+		- The execution time is measured using `std::clock()`. For each container, the function registers the time when `main_chain` is called (in `startV`) and when it its done with the sorting (in `endV`). Finally, the difference between the two variables is converted to microseconds by multiplying it by one million and dividing by CLOCKS_PER_SEC. This provides an estimate of the CPU time consumed by the measured operation for each container. The reported time depends on the code included between the start and end measurements.
 
 ### What can we learn about this exercise?
 
@@ -112,95 +113,6 @@ This exercise introduces **advanced sorting algorithms, container comparison and
 
 #### Last but not least, check out these other repositories if you feel lost, they helped me a lot through the project:
 
-* [42 C++ Module 09 — Reference repository](https://github.com/qduong42/42_cpp_Module09)
-* [C++ Module 09 — STL exercises and explanations](https://github.com/tigran-sargsyan-w/cpp-module-09)
-
-
-
-
-# cpp_module_09
-
-Hay que explicar bien el código de ex00, contenedores y su lógica, por que lo he escogido, etc...
-PUEDES PONER CONTRUCTORES EN LAS CLASES y mensajes en las excepciones
-
-ex02, cuidado cuando se comparan direcciones de memoria en vez de los números en si
-
 https://github.com/leske42/CPP09
 https://github.com/0x416c6941/cpp09/tree/main/cpp09/ex00
 https://github.com/tigran-sargsyan-w/cpp-module-09#ex02--pmergeme
-
-
-template <typename Q, typename S>
-void binary_insertion(Q& result, const S& SmallOnesOrg)
-{
-    for (size_t i = 0; i < SmallOnesOrg.size(); ++i)
-    {
-        int small = SmallOnesOrg[i].first;
-        int id = SmallOnesOrg[i].second;
-
-        // Buscar el big asociado mediante su id.
-        size_t bigPos = 0;
-        while (bigPos < result.size()
-            && result[bigPos].second != id)
-        {
-            ++bigPos;
-        }
-
-        // Si no existe el big asociado, no podemos acotar la búsqueda.
-        if (bigPos == result.size())
-            continue;
-
-        // Búsqueda binaria desde el inicio hasta antes del big asociado.
-        size_t first = 0;
-        size_t last = bigPos;
-
-        while (first < last)
-        {
-            size_t mid = first + (last - first) / 2;
-
-            if (result[mid].first < small)
-                first = mid + 1;
-            else
-                last = mid;
-        }
-
-        // Insertar el small conservando el id de su big.
-        result.insert(result.begin() + first,
-                      std::make_pair(small, id));
-    }
-}
-
-¿Qué hace exactamente?
-Lee el número pequeño y su id desde SmallOnesOrg.
-
-Busca en result el elemento grande que tiene ese mismo id.
-
-Guarda su posición en bigPos.
-
-Busca la posición correcta del pequeño únicamente en el rango [0, bigPos).
-
-Inserta el pequeño como std::make_pair(small, id), conservando la asociación.
-
-Por ejemplo, si result contiene:
-
-text
-(4, 10)  (8, 20)  (12, 30)
-Y SmallOnesOrg contiene:
-
-text
-(6, 20)
-La búsqueda queda limitada a los elementos anteriores al 8, y el resultado es:
-
-text
-(4, 10)  (6, 20)  (8, 20)  (12, 30)
-El 6 conserva el id 20, igual que su asociado 8.
-
-Dos detalles importantes
-Duplicados: esta función identifica el asociado por el id, no por el valor numérico. Así, dos números iguales pueden mantener asociaciones distintas, siempre que los id identifiquen de forma única cada pareja.
-
-Orden de inserción: en Ford-Johnson, los pequeños se insertan siguiendo el orden determinado por los números de Jacobsthal, no necesariamente en el orden en el que aparecen en SmallOnesOrg. Limitar cada búsqueda al big asociado es parte del algoritmo, pero para respetar su estrategia de comparaciones también debes mantener ese orden de inserción. 
-
-Wikipedia
-+1
-
-Importante: el ejemplo anterior presupone que los id de SmallOnesOrg y result coinciden y que cada big asociado sigue presente en result. Si eliminas los pequeños de SmallOnesOrg al insertarlos, tendrás que hacerlo mediante un iterador o una estructura auxiliar para no invalidar las posiciones que recorres.
