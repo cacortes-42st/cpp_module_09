@@ -6,7 +6,7 @@
 /*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:05 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/25 20:40:37 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/27 21:40:11 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,35 +41,6 @@ int	ArgumentPrinter(char **numbers, int argc)
 	std::cout << "\n";
 	return (0);
 }
-
-// std::vector<std::pair<int, int> > jacky_resolution(std::vector<std::pair<int, int> > littleOnes, std::vector<int> jacky)
-// {
-// 	std::vector<std::pair<int, int> > result;
-
-// 	size_t previous = 0;
-// 	size_t size = littleOnes.size();
-
-// 	for (size_t i = 0; i < jacky.size(); ++i)
-// 	{
-// 		size_t current = static_cast<size_t>(jacky[i]);
-
-// 		if (current > size)
-// 			current = size;
-
-// 		while (current > previous)
-// 		{
-// 			result.push_back(littleOnes[current - 1]);
-// 			--current;
-// 		}
-
-// 		previous = static_cast<size_t>(jacky[i]);
-
-// 		if (previous >= size)
-// 			break;
-// 	}
-
-// 	return result;
-// }
 
 std::vector<int> jacky_secuency(int count)
 {

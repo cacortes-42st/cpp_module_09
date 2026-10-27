@@ -6,7 +6,7 @@
 /*   By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/09 09:38:35 by cacortes          #+#    #+#             */
-/*   Updated: 2026/10/25 20:42:30 by cacortes         ###   ########.fr       */
+/*   Updated: 2026/10/27 21:40:53 by cacortes         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ struct PairNumbers
 
 int	MyAtoi(std::string str);
 std::vector<int>	jacky_secuency(int	argc);
-// std::vector<std::pair<int, int> > jacky_resolution(std::vector<std::pair<int, int> > littleOnes, std::vector<int> jacky);
 void	free_char(char **result);
 
 inline void print_element(const std::pair<int, int>& value)
@@ -297,16 +296,11 @@ U	main_creator(T &Container, char **numbers, int argc)
     	}
 	}
 
-	//std::vector<std::pair<int, int> > SmallOnesVector(SmallOnes.begin(), SmallOnes.end());
-
 	if (hasLeftover)
 		SmallOnes.push_back(std::make_pair(leftover, -1));
-		//SmallOnesVector.push_back(std::make_pair(leftover, -1));
 
-	//std::vector<int> JackyNumbers = jacky_secuency(static_cast<int>(SmallOnesVector.size()));
 	std::vector<int> JackyNumbers = jacky_secuency(static_cast<int>(SmallOnes.size()));
 
-	//std::vector<std::pair<int, int> > SmallOnesOrg = jacky_resolution(SmallOnesVector, JackyNumbers);
 	U SmallOnesOrg = jacky_resolution(SmallOnes, JackyNumbers);
 
 		
