@@ -1,13 +1,9 @@
 # cpp_module_09
 
-
 ### Clarifications and general tips:
 
 * If you find any kind of error or have suggestions to improve, please do not hesitate to point them out in the `issues` section! Obviously always respectfully, thank you :D.
 * Always remember that the output examples are just examples. They can vary in your own project and still be fine.
-* This module focuses on **the STL (Standard Template Library)**, applying standard containers to solve different problems involving data processing, mathematical expressions and sorting algorithms.
-* Remember that **once a container is used in one exercise, it cannot be used in the remaining exercises**. Exercise 02 requires two different containers.
-* The entire module must comply with the **C++98 standard**. Compile your programs using `c++` with the flags `-Wall -Wextra -Werror`.
 
 
 ## ex00: Bitcoin Exchange
@@ -42,7 +38,7 @@
 
 ### What can we learn about this exercise?
 
-This exercise introduces **file parsing, data validation and associative containers** through a program that processes historical Bitcoin exchange rates. It also teaches us how to search for the closest available date in an ordered database and handle invalid input safely.
+This exercise introduces **file parsing, data validation and associative containers** through a program that processes historical Bitcoin exchange rates. It also teaches us how to search for the closest available earlier date in an ordered database and handle invalid input safely.
 
 ### Output example:
 
@@ -68,7 +64,7 @@ This exercise introduces **file parsing, data validation and associative contain
 
 ### What can we learn about this exercise?
 
-This exercise introduces **Reverse Polish Notation (RPN)**, a mathematical notation in which operators follow their operands. It teaches us how to evaluate expressions using an STL container, process tokens and perform arithmetic operations in the correct order without requiring parentheses or operator precedence rules.
+This exercise introduces **Reverse Polish Notation (RPN)**, a mathematical notation in which operators follow their operands. It teaches us how to evaluate expressions using an STL container, process tokens and perform arithmetic operations in the correct order without relying on parentheses or conventional operator precedence rules.
 
 ### Output example:
 
@@ -106,7 +102,7 @@ This exercise introduces **Reverse Polish Notation (RPN)**, a mathematical notat
 
 ### What can we learn about this exercise?
 
-This exercise introduces **advanced sorting algorithms, container comparison and performance measurement**. It focuses on the Ford-Johnson algorithm, which uses a merge-insertion strategy to sort elements efficiently. It also helps us understand how different STL containers can affect execution time when implementing the same algorithm.
+This exercise introduces **advanced sorting algorithms, container comparison and performance measurement**. It focuses on the Ford-Johnson algorithm, which uses a merge-insertion strategy designed to reduce the number of comparisons required to sort a sequence. It also helps us understand how different STL containers can affect execution time when implementing the same algorithm.
 
 ### Output example:
 
