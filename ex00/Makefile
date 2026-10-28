@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cacortes <cacortes@student.42malaga.com    +#+  +:+       +#+         #
+#    By: cacortes <cacortes@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/25 09:13:48 by cacortes          #+#    #+#              #
-#    Updated: 2026/10/02 11:22:25 by cacortes         ###   ########.fr        #
+#    Updated: 2026/10/28 17:42:31 by cacortes         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
